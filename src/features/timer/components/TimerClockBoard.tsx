@@ -2,21 +2,33 @@ import { Play, Pause, SkipBack, SkipForward } from 'lucide-react';
 
 interface TimerClockBoardProps {
   isPlaying: boolean;
+  timeLeft: number;
   onTogglePlay: () => void;
+  onNextRound: () => void;
+  onPrevRound: () => void;
 }
 
-export function TimerClockBoard({ isPlaying, onTogglePlay }: TimerClockBoardProps) {
+export function TimerClockBoard({ isPlaying, timeLeft, onTogglePlay, onNextRound, onPrevRound }: TimerClockBoardProps) {
+  const formatTime = (totalSeconds: number) => {
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  };
+
   return (
-    <div className="col-span-6 flex flex-col items-center justify-between bg-white/[0.02] rounded-2xl border border-white/5 p-4 xl:p-6 min-h-0 overflow-hidden">
+    <div className="col-span-6 flex flex-col items-center justify-between bg-white/2 rounded-2xl border border-white/5 p-4 xl:p-6 min-h-0 overflow-hidden">
       <span className="text-gray-500 font-bold tracking-[0.3em] shrink-0 mt-2 xl:mt-4">ROUND 10</span>
 
-      <h1 className="text-[clamp(5rem,18vh,12rem)] font-black leading-none tracking-tighter text-white drop-shadow-2xl my-auto shrink-0">
-        28:29
+      <h1 className="text-[clamp(5rem,18vh,12rem)] font-black leading-none tracking-tighter text-white drop-shadow-2xl my-auto shrink-0 tabular-nums">
+        {formatTime(timeLeft)}
       </h1>
 
       <div className="flex flex-col items-center w-full shrink-0">
         <div className="flex items-center gap-4 xl:gap-6 mb-4 xl:mb-6">
-          <button className="p-2 xl:p-3 text-gray-500 hover:text-white hover:bg-white/10 rounded-full transition-all">
+          <button
+            onClick={onPrevRound}
+            className="p-2 xl:p-3 text-gray-500 hover:text-white hover:bg-white/10 rounded-full transition-all"
+          >
             <SkipBack size={24} />
           </button>
 
@@ -31,7 +43,10 @@ export function TimerClockBoard({ isPlaying, onTogglePlay }: TimerClockBoardProp
             )}
           </button>
 
-          <button className="p-2 xl:p-3 text-gray-500 hover:text-white hover:bg-white/10 rounded-full transition-all">
+          <button
+            onClick={onNextRound}
+            className="p-2 xl:p-3 text-gray-500 hover:text-white hover:bg-white/10 rounded-full transition-all"
+          >
             <SkipForward size={24} />
           </button>
         </div>
@@ -44,9 +59,7 @@ export function TimerClockBoard({ isPlaying, onTogglePlay }: TimerClockBoardProp
             <p className="text-2xl xl:text-4xl font-bold">200 / 400</p>
             <p className="text-xs xl:text-sm text-gray-400 mt-1">Ante: 400</p>
           </div>
-
           <div className="w-px bg-white/10"></div>
-
           <div className="text-center opacity-50">
             <p className="text-[10px] xl:text-xs text-gray-600 uppercase font-bold mb-1">Next Blinds</p>
             <p className="text-2xl xl:text-4xl text-gray-500 font-bold">400 / 800</p>
