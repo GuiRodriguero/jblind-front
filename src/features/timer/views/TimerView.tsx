@@ -106,9 +106,29 @@ export function TimerView() {
 
   const currentLevel = tournament.levels[currentLevelIndex];
   const nextLevel = tournament.levels[currentLevelIndex + 1];
+  let nextBreakMessage: string | null = null;
 
   const totalChipsInPlay = tournament.expectedPlayers * tournament.startingStack;
   const currentAvgStack = activePlayers.length > 0 ? totalChipsInPlay / activePlayers.length : 0;
+
+  if (tournament && !currentLevel.isBreak) {
+    let timeToBreakSeconds = timeLeft;
+    let foundBreak = false;
+
+    for (let i = currentLevelIndex + 1; i < tournament.levels.length; i++) {
+      if (tournament.levels[i].isBreak) {
+        foundBreak = true;
+        break;
+      }
+      timeToBreakSeconds += tournament.levels[i].durationInMinutes * 60;
+    }
+
+    if (foundBreak) {
+      const minutesToBreak = Math.ceil(timeToBreakSeconds / 60);
+      nextBreakMessage = `Next break in ${minutesToBreak} min`;
+      // Dica: Para usar i18n aqui: nextBreakMessage = t('timer.nextBreakIn', { minutes: minutesToBreak });
+    }
+  }
 
   return (
     <div className="h-full flex flex-col p-6 gap-6 overflow-hidden">
@@ -128,6 +148,7 @@ export function TimerView() {
             nextLevel ? (nextLevel.isBreak ? 'BREAK' : `${nextLevel.smallBlind} / ${nextLevel.bigBlind}`) : 'END'
           }
           nextAnte={nextLevel?.ante || 0}
+          nextBreakMessage={nextBreakMessage}
           onTogglePlay={() => setIsPlaying(!isPlaying)}
           onNextRound={handleNextRound}
           onPrevRound={handlePrevRound}
