@@ -1,7 +1,13 @@
-export function TimerBlindsTableCard() {
+import { useTranslation } from 'react-i18next';
+
+export function TimerBlindsTableCard({ levels, currentIndex }: { levels: any[]; currentIndex: number }) {
+  const { t } = useTranslation();
+
   return (
     <div className="flex-2 bg-white/5 rounded-2xl border border-white/10 p-4 flex flex-col overflow-hidden min-h-0">
-      <h2 className="text-center text-xs font-bold text-gray-500 uppercase tracking-widest mb-4 shrink-0">Structure</h2>
+      <h2 className="text-center text-xs font-bold text-gray-500 uppercase tracking-widest mb-4 shrink-0">
+        {t('timer.structure')}
+      </h2>
       <div className="overflow-y-auto flex-1 pr-2 custom-scrollbar">
         <table className="w-full text-xs text-center text-gray-300 relative">
           <thead className="sticky top-0 bg-background z-10">
@@ -12,13 +18,13 @@ export function TimerBlindsTableCard() {
             </tr>
           </thead>
           <tbody>
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map((round) => (
-              <tr key={round} className={round === 10 ? 'bg-blue-600/20 text-blue-400 font-bold' : ''}>
-                <td className="py-3">{round}</td>
-                <td>
-                  {round * 100}/{round * 200}
+            {levels.map((level: any, index: number) => (
+              <tr key={index} className={index === currentIndex ? 'bg-blue-600/20 text-blue-400 font-bold' : ''}>
+                <td className="py-3">{level.isBreak ? 'BREAK' : level.roundNumber}</td>
+                <td className={level.isBreak ? 'text-amber-500 uppercase font-bold' : ''}>
+                  {level.isBreak ? 'Intervalo' : `${level.smallBlind}/${level.bigBlind}`}
                 </td>
-                <td>{round * 100}</td>
+                <td>{level.isBreak ? '-' : level.ante}</td>
               </tr>
             ))}
           </tbody>
