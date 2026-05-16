@@ -1,14 +1,32 @@
 import { Play, Pause, SkipBack, SkipForward } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface TimerClockBoardProps {
   isPlaying: boolean;
   timeLeft: number;
+  roundName: string;
+  currentBlinds: string;
+  currentAnte: number;
+  nextBlinds: string;
+  nextAnte: number;
   onTogglePlay: () => void;
   onNextRound: () => void;
   onPrevRound: () => void;
 }
 
-export function TimerClockBoard({ isPlaying, timeLeft, onTogglePlay, onNextRound, onPrevRound }: TimerClockBoardProps) {
+export function TimerClockBoard({
+  isPlaying,
+  timeLeft,
+  roundName,
+  currentBlinds,
+  currentAnte,
+  nextBlinds,
+  nextAnte,
+  onTogglePlay,
+  onNextRound,
+  onPrevRound,
+}: TimerClockBoardProps) {
+  const { t } = useTranslation();
   const formatTime = (totalSeconds: number) => {
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
@@ -17,7 +35,7 @@ export function TimerClockBoard({ isPlaying, timeLeft, onTogglePlay, onNextRound
 
   return (
     <div className="col-span-6 flex flex-col items-center justify-between bg-white/2 rounded-2xl border border-white/5 p-4 xl:p-6 min-h-0 overflow-hidden">
-      <span className="text-gray-500 font-bold tracking-[0.3em] shrink-0 mt-2 xl:mt-4">ROUND 10</span>
+      <span className="text-gray-500 font-bold tracking-[0.3em] shrink-0 mt-2 xl:mt-4">{roundName}</span>
 
       <h1 className="text-[clamp(5rem,18vh,12rem)] font-black leading-none tracking-tighter text-white drop-shadow-2xl my-auto shrink-0 tabular-nums">
         {formatTime(timeLeft)}
@@ -51,19 +69,19 @@ export function TimerClockBoard({ isPlaying, timeLeft, onTogglePlay, onNextRound
           </button>
         </div>
 
-        <p className="text-sm xl:text-base text-blue-400 font-medium mb-3">Next break in 15 minutes</p>
+        <p className="text-sm xl:text-base text-blue-400 font-medium mb-3">Timer Controls</p>
 
         <div className="flex justify-around w-full bg-[#0a0a0a] py-4 px-2 xl:p-6 rounded-2xl border border-white/5">
           <div className="text-center">
-            <p className="text-[10px] xl:text-xs text-gray-500 uppercase font-bold mb-1">Current Blinds</p>
-            <p className="text-2xl xl:text-4xl font-bold">200 / 400</p>
-            <p className="text-xs xl:text-sm text-gray-400 mt-1">Ante: 400</p>
+            <p className="text-[10px] xl:text-xs text-gray-500 uppercase font-bold mb-1">{t('timer.currentBlinds')}</p>
+            <p className="text-2xl xl:text-4xl font-bold">{currentBlinds}</p>
+            <p className="text-xs xl:text-sm text-gray-400 mt-1">Ante: {currentAnte}</p>
           </div>
           <div className="w-px bg-white/10"></div>
           <div className="text-center opacity-50">
-            <p className="text-[10px] xl:text-xs text-gray-600 uppercase font-bold mb-1">Next Blinds</p>
-            <p className="text-2xl xl:text-4xl text-gray-500 font-bold">400 / 800</p>
-            <p className="text-xs xl:text-sm text-gray-500 mt-1">Ante: 800</p>
+            <p className="text-[10px] xl:text-xs text-gray-600 uppercase font-bold mb-1">{t('timer.nextBlinds')}</p>
+            <p className="text-2xl xl:text-4xl text-gray-500 font-bold">{nextBlinds}</p>
+            <p className="text-xs xl:text-sm text-gray-500 mt-1">Ante: {nextAnte}</p>
           </div>
         </div>
       </div>

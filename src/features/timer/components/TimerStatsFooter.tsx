@@ -1,19 +1,30 @@
-function StatItem({ label, value }: { label: string; value: string }) {
+import { useTranslation } from 'react-i18next';
+
+export function TimerStatsFooter({
+  entrants,
+  chipsInPlay,
+  avgStack,
+}: {
+  entrants: number;
+  chipsInPlay: number;
+  avgStack: number;
+}) {
+  const { t } = useTranslation();
   return (
-    <div className="text-center bg-white/5 py-3 rounded-xl border border-white/5">
-      <p className="text-[10px] text-gray-500 uppercase font-bold tracking-widest mb-1">{label}</p>
-      <p className="text-xl font-bold text-gray-200">{value}</p>
+    <div className="grid grid-cols-4 gap-4 pt-6 border-t border-white/10 mt-auto shrink-0">
+      <StatItem label={t('timer.entrants')} value={entrants} />
+      <StatItem label={t('timer.remaining')} value={entrants} />
+      <StatItem label={t('timer.chipsInPlay')} value={chipsInPlay.toLocaleString()} />
+      <StatItem label={t('timer.averageStack')} value={avgStack.toLocaleString()} />
     </div>
   );
 }
 
-export function TimerStatsFooter() {
+function StatItem({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="grid grid-cols-4 gap-4 pt-6 border-t border-white/10 mt-auto shrink-0">
-      <StatItem label="Entrants" value="1,000" />
-      <StatItem label="Remaining" value="700" />
-      <StatItem label="Chips in Play" value="200,000" />
-      <StatItem label="Avg. Stack" value="286" />
+    <div className="text-center bg-white/5 py-3 rounded-xl border border-white/5">
+      <p className="text-[10px] text-gray-500 uppercase font-bold tracking-widest mb-1">{label}</p>
+      <p className="text-xl font-bold text-gray-200">{value}</p>
     </div>
   );
 }
