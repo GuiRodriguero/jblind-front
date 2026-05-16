@@ -1,19 +1,18 @@
 import { useTranslation } from 'react-i18next';
 
-export function TimerStatsFooter({
-  entrants,
-  chipsInPlay,
-  avgStack,
-}: {
-  entrants: number;
-  chipsInPlay: number;
-  avgStack: number;
-}) {
+interface TimerStatsFooterProps {
+  readonly entrants: number;
+  readonly remaining: number;
+  readonly chipsInPlay: number;
+  readonly avgStack: number;
+}
+
+export function TimerStatsFooter({ entrants, remaining, chipsInPlay, avgStack }: TimerStatsFooterProps) {
   const { t } = useTranslation();
   return (
     <div className="grid grid-cols-4 gap-4 pt-6 border-t border-white/10 mt-auto shrink-0">
       <StatItem label={t('timer.entrants')} value={entrants} />
-      <StatItem label={t('timer.remaining')} value={entrants} />
+      <StatItem label={t('timer.remaining')} value={remaining} />
       <StatItem label={t('timer.chipsInPlay')} value={chipsInPlay.toLocaleString()} />
       <StatItem label={t('timer.averageStack')} value={avgStack.toLocaleString()} />
     </div>

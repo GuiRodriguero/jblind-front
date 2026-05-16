@@ -1,21 +1,28 @@
-import type { ElementType } from "react";
-import { Link, type LinkProps } from "react-router-dom";
+import type { ElementType } from 'react';
+import { Link, useLocation, type LinkProps } from 'react-router-dom';
 
 interface SidebarLinkProps extends LinkProps {
-  icon: ElementType;
-  title: string;
+  readonly to: string;
+  readonly icon: ElementType;
+  readonly title: string;
+  readonly isCollapsed?: boolean;
 }
 
-export function SidebarLink({ icon: Icon, title, ...props }: SidebarLinkProps) {
+export function SidebarLink({ to, icon: Icon, title, isCollapsed }: SidebarLinkProps) {
+  const location = useLocation();
+  const isActive = location.pathname.startsWith(to);
+
   return (
     <Link
-      {...props}
-      className="flex items-center justify-between px-3 py-3 rounded-lg hover:bg-surface/50 hover:text-white transition-all duration-200 group"
+      to={to}
+      title={isCollapsed ? title : undefined}
+      className={`flex items-center px-3 py-2.5 rounded-lg transition-all font-medium overflow-hidden ${
+        isActive ? 'bg-blue-600/20 text-blue-400' : 'text-gray-400 hover:text-white hover:bg-white/5'
+      } ${isCollapsed ? 'justify-center gap-0' : 'justify-start gap-3'}`}
     >
-      <div className="flex items-center gap-4">
-        <Icon size={18} />
-        <span className="font-medium text-sm">{title}</span>
-      </div>
+      <Icon size={20} className="shrink-0" />
+
+      {!isCollapsed && <span className="truncate transition-opacity duration-300">{title}</span>}
     </Link>
   );
 }

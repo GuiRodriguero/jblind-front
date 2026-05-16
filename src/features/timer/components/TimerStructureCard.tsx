@@ -21,9 +21,7 @@ export function TimerBlindsTableCard({ levels, currentIndex }: { levels: any[]; 
             {levels.map((level: any, index: number) => (
               <tr key={index} className={index === currentIndex ? 'bg-blue-600/20 text-blue-400 font-bold' : ''}>
                 <td className="py-3">{level.isBreak ? 'BREAK' : level.roundNumber}</td>
-                <td className={level.isBreak ? 'text-amber-500 uppercase font-bold' : ''}>
-                  {level.isBreak ? 'Intervalo' : `${level.smallBlind}/${level.bigBlind}`}
-                </td>
+                <td>{level.isBreak ? '-' : `${level.smallBlind}/${level.bigBlind}`}</td>
                 <td>{level.isBreak ? '-' : level.ante}</td>
               </tr>
             ))}
