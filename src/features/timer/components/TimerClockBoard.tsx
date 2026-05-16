@@ -9,6 +9,7 @@ interface TimerClockBoardProps {
   currentAnte: number;
   nextBlinds: string;
   nextAnte: number;
+  nextBreakMessage?: string | null;
   onTogglePlay: () => void;
   onNextRound: () => void;
   onPrevRound: () => void;
@@ -22,6 +23,7 @@ export function TimerClockBoard({
   currentAnte,
   nextBlinds,
   nextAnte,
+  nextBreakMessage,
   onTogglePlay,
   onNextRound,
   onPrevRound,
@@ -69,7 +71,11 @@ export function TimerClockBoard({
           </button>
         </div>
 
-        <p className="text-sm xl:text-base text-blue-400 font-medium mb-3">Timer Controls</p>
+        {nextBreakMessage ? (
+          <p className="text-sm xl:text-base text-blue-400 font-medium mb-3">{nextBreakMessage}</p>
+        ) : (
+          <div className="h-5 xl:h-6 mb-3" />
+        )}
 
         <div className="flex justify-around w-full bg-[#0a0a0a] py-4 px-2 xl:p-6 rounded-2xl border border-white/5">
           <div className="text-center">
