@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { TimerBlindsTableCard } from '../components/TimerStructureCard';
 import { TimerPrizePoolCard } from '../components/TimerPrizePoolCard';
 import { TimerClockBoard } from '../components/TimerClockBoard';
 import { TimerPlayersCard } from '../components/TimerPlayersCard';
 import { TimerStatsFooter } from '../components/TimerStatsFooter';
 import { useTranslation } from 'react-i18next';
+import type { Player } from '../types/player.type';
 
 export function TimerView() {
   const { t } = useTranslation();
@@ -15,8 +16,10 @@ export function TimerView() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [loading, setLoading] = useState(true);
   const [tournament, setTournament] = useState<any>(null);
+  const [activePlayers, setActivePlayers] = useState<Player[]>([]);
   const [currentLevelIndex, setCurrentLevelIndex] = useState(0);
   const [timeLeft, setTimeLeft] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function loadTournament() {
@@ -26,6 +29,19 @@ export function TimerView() {
         if (response.ok) {
           const data = await response.json();
           setTournament(data);
+
+          const playersCount = Number(data.expectedPlayers) || 0;
+          const stackCount = Number(data.startingStack) || 0;
+          if (playersCount > 0) {
+            const initialPlayers = Array.from({ length: playersCount }).map((_, i) => ({
+              id: i + 1,
+              name: `Player ${i + 1}`,
+              seat: i + 1,
+              chips: stackCount,
+            }));
+            setActivePlayers(initialPlayers);
+          }
+
           setTimeLeft(data.levels[0].durationInMinutes * 60);
         }
       } catch (error) {
@@ -69,11 +85,30 @@ export function TimerView() {
     }
   };
 
+  const handleEliminatePlayer = (playerId: number) => {
+    setActivePlayers((prev) => {
+      const remainingPlayers = prev.filter((p) => p.id !== playerId);
+
+      if (remainingPlayers.length === 1) {
+        setIsPlaying(false);
+        setTimeout(() => {
+          alert(`🎉 Torneio Finalizado! ${remainingPlayers[0].name} é o Campeão!`);
+        }, 300);
+        navigate('/tournaments');
+      }
+
+      return remainingPlayers;
+    });
+  };
+
   if (loading) return <div className="p-8 text-white">{t('timer.loading')}</div>;
   if (!tournament) return <div className="p-8 text-white">{t('timer.notFound')}</div>;
 
   const currentLevel = tournament.levels[currentLevelIndex];
   const nextLevel = tournament.levels[currentLevelIndex + 1];
+
+  const totalChipsInPlay = tournament.expectedPlayers * tournament.startingStack;
+  const currentAvgStack = activePlayers.length > 0 ? totalChipsInPlay / activePlayers.length : 0;
 
   return (
     <div className="h-full flex flex-col p-6 gap-6 overflow-hidden">
@@ -98,14 +133,14 @@ export function TimerView() {
           onPrevRound={handlePrevRound}
         />
 
-        <TimerPlayersCard totalPlayers={tournament.expectedPlayers} />
+        <TimerPlayersCard players={activePlayers} onEliminate={handleEliminatePlayer} />
       </div>
-
       <TimerStatsFooter
         entrants={tournament.expectedPlayers}
-        chipsInPlay={tournament.expectedPlayers * tournament.startingStack}
-        avgStack={tournament.startingStack}
-      />
+        remaining={activePlayers.length}
+        chipsInPlay={totalChipsInPlay}
+        avgStack={currentAvgStack}
+      />{' '}
     </div>
   );
 }
