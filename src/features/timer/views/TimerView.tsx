@@ -125,8 +125,7 @@ export function TimerView() {
 
     if (foundBreak) {
       const minutesToBreak = Math.ceil(timeToBreakSeconds / 60);
-      nextBreakMessage = `Next break in ${minutesToBreak} min`;
-      // Dica: Para usar i18n aqui: nextBreakMessage = t('timer.nextBreakIn', { minutes: minutesToBreak });
+      nextBreakMessage = `${t('timer.nextBreakIn')} ${minutesToBreak} min`;
     }
   }
 
@@ -161,7 +160,7 @@ export function TimerView() {
         remaining={activePlayers.length}
         chipsInPlay={totalChipsInPlay}
         avgStack={currentAvgStack}
-      />{' '}
+      />
     </div>
   );
 }
