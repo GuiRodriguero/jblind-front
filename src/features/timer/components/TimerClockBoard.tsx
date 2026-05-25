@@ -39,7 +39,7 @@ export function TimerClockBoard({
     <div className="col-span-6 flex flex-col items-center justify-between bg-white/2 rounded-2xl border border-white/5 p-4 xl:p-6 min-h-0 overflow-hidden">
       <span className="text-gray-500 font-bold tracking-[0.3em] shrink-0 mt-2 xl:mt-4">{roundName}</span>
 
-      <h1 className="text-[clamp(5rem,18vh,12rem)] font-black leading-none tracking-tighter text-white drop-shadow-2xl my-auto shrink-0 tabular-nums">
+      <h1 className="text-[clamp(5rem,18vh,12rem)] font-digital leading-none text-white my-auto shrink-0">
         {formatTime(timeLeft)}
       </h1>
 
