@@ -7,6 +7,7 @@ import { TimerPlayersCard } from '../components/TimerPlayersCard';
 import { TimerStatsFooter } from '../components/TimerStatsFooter';
 import { useTranslation } from 'react-i18next';
 import type { Player } from '../types/player.type';
+import { CoffeeAnimated } from '../components/icon/CoffeeAnimatedIcon';
 
 export function TimerView() {
   const { t } = useTranslation();
@@ -129,6 +130,19 @@ export function TimerView() {
     }
   }
 
+  const currentBlindsInfo = () => {
+    if (currentLevel.isBreak) {
+      return (
+        <div className="flex items-center gap-4 xl:mb-6">
+          <span>BREAK</span>
+          <CoffeeAnimated />
+        </div>
+      );
+    }
+
+    return <span>{`${currentLevel.smallBlind} / ${currentLevel.bigBlind}`}</span>;
+  };
+
   return (
     <div className="h-full flex flex-col p-6 gap-6 overflow-hidden">
       <div className="grid grid-cols-12 gap-6 flex-1 min-h-0">
@@ -141,7 +155,10 @@ export function TimerView() {
           isPlaying={isPlaying}
           timeLeft={timeLeft}
           roundName={currentLevel.isBreak ? 'BREAK' : `ROUND ${currentLevel.roundNumber}`}
-          currentBlinds={currentLevel.isBreak ? 'BREAK' : `${currentLevel.smallBlind} / ${currentLevel.bigBlind}`}
+          isBreak={currentLevel.isBreak}
+          shouldColorUp={currentLevel.shouldColorUp}
+          currentBlinds={currentBlindsInfo()}
+          currentBigBlind={currentLevel.bigBlind}
           currentAnte={currentLevel.ante || 0}
           nextBlinds={
             nextLevel ? (nextLevel.isBreak ? 'BREAK' : `${nextLevel.smallBlind} / ${nextLevel.bigBlind}`) : 'END'

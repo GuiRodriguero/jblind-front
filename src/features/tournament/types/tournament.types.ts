@@ -6,4 +6,5 @@ export interface TournamentLevel {
   ante: number;
   duration: number; // minutes
   isBreak: boolean;
+  shouldColorUp?: boolean;
 }

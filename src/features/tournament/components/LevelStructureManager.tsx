@@ -11,7 +11,7 @@ interface LevelStructureManagerProps {
 
 export function LevelStructureManager({ levels, onLevelsChange }: LevelStructureManagerProps) {
   const { t } = useTranslation();
-  const [currentRound, setCurrentRound] = useState(0);
+  const [currentRound, setCurrentRound] = useState(1);
 
   const addLevel = () => {
     setCurrentRound(currentRound + 1);

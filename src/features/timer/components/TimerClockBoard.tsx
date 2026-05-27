@@ -1,12 +1,16 @@
 import { Play, Pause, SkipBack, SkipForward } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import PokerChip from './chip/PokerChip';
+import type { ReactNode } from 'react';
 
 interface TimerClockBoardProps {
   isPlaying: boolean;
   timeLeft: number;
   roundName: string;
-  currentBlinds: string;
+  isBreak?: boolean;
+  shouldColorUp?: boolean;
+  currentBlinds: ReactNode;
+  currentBigBlind: number;
   currentAnte: number;
   nextBlinds: string;
   nextAnte: number;
@@ -20,7 +24,10 @@ export function TimerClockBoard({
   isPlaying,
   timeLeft,
   roundName,
+  isBreak,
+  shouldColorUp,
   currentBlinds,
+  currentBigBlind,
   currentAnte,
   nextBlinds,
   nextAnte,
@@ -36,12 +43,7 @@ export function TimerClockBoard({
     const seconds = totalSeconds % 60;
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
-
-  const renderCurrentChips = (blindsStr: string) => {
-    if (blindsStr === 'BREAK') return null;
-
-    const blinds = blindsStr.split('/').map((s) => parseInt(s.trim(), 10));
-    const bigBlind = blinds[1];
+  const renderCurrentChips = (bigBlind: number) => {
     const standardChips = [1, 5, 10, 25, 100, 500, 1000, 5000, 10000, 25000];
     const validChips = standardChips.filter((chip) => chip <= bigBlind);
     const chipsToShow = validChips.slice(-2).reverse();
@@ -54,6 +56,8 @@ export function TimerClockBoard({
       </div>
     );
   };
+
+  const glowColor = isBreak && shouldColorUp ? 'bg-amber-500/20' : 'bg-blue-600/20';
 
   return (
     <div className="col-span-6 flex flex-col items-center justify-between bg-white/2 rounded-2xl border border-white/5 p-4 xl:p-6 min-h-0 overflow-hidden">
@@ -96,13 +100,21 @@ export function TimerClockBoard({
         )}
 
         <div className="flex justify-around items-start w-full bg-[#0a0a0a] py-4 px-2 xl:p-6 rounded-2xl border border-white/5 relative overflow-hidden">
-          <div className="absolute left-1/4 bottom-0 -translate-x-1/2 w-32 h-16 bg-blue-600/20 blur-[30px] rounded-full pointer-events-none"></div>
+          <div
+            className={`absolute left-1/4 bottom-0 -translate-x-1/2 w-32 h-16 ${glowColor} blur-[30px] rounded-full pointer-events-none transition-colors duration-1000`}
+          ></div>
 
           <div className="text-center flex flex-col items-center relative z-10 w-1/2">
             <p className="text-[10px] xl:text-xs text-blue-400 uppercase font-bold mb-1">{t('timer.currentBlinds')}</p>
             <p className="text-3xl xl:text-5xl font-bold text-white drop-shadow-md">{currentBlinds}</p>
-            <p className="text-xs xl:text-sm text-gray-400 mt-1">Ante: {currentAnte}</p>
-            {renderCurrentChips(currentBlinds)}
+            {!isBreak && <p className="text-xs xl:text-sm text-gray-400 mt-1">Ante: {currentAnte}</p>}
+            {isBreak && shouldColorUp && (
+              <div className="flex items-center gap-4">
+                <p className="text-[12px] text-amber-400 font-bold uppercase">{t('timer.removeLowChips')}</p>
+                <PokerChip size="sm" />
+              </div>
+            )}
+            {renderCurrentChips(currentBigBlind)}
           </div>
 
           <div className="w-px bg-white/10 h-24 my-auto"></div>
@@ -110,7 +122,7 @@ export function TimerClockBoard({
           <div className="text-center flex flex-col items-center opacity-50 w-1/2">
             <p className="text-[10px] xl:text-xs text-gray-600 uppercase font-bold mb-1">{t('timer.nextBlinds')}</p>
             <p className="text-2xl xl:text-4xl text-gray-500 font-bold">{nextBlinds}</p>
-            <p className="text-xs xl:text-sm text-gray-500 mt-1">Ante: {nextAnte}</p>
+            {!isBreak && <p className="text-xs xl:text-sm text-gray-500 mt-1">Ante: {nextAnte}</p>}
           </div>
         </div>
       </div>

@@ -1,0 +1,149 @@
+/* poker-chip.css */
+
+.poker-chip {
+  --chip-bg: #64748b;
+  --chip-stripe: #ffffff;
+  --chip-text: #ffffff;
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 9999px;
+  border: 1px solid rgb(0 0 0 / 0.5);
+
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);
+
+  background-color: var(--chip-bg);
+  background-image: repeating-conic-gradient(
+    var(--chip-stripe) 0deg 25deg,
+    transparent 20.5deg 59.5deg,
+    var(--chip-stripe) 60deg
+  );
+}
+
+.poker-chip-inner {
+  position: absolute;
+
+  width: 75%;
+  height: 75%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 9999px;
+
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.35);
+
+  background-color: var(--chip-bg);
+  border: 1px solid var(--chip-stripe);
+}
+
+.poker-chip-text {
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  color: var(--chip-text);
+}
+
+/* Sizes */
+
+.poker-chip--sm {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.poker-chip--sm .poker-chip-text {
+  font-size: 8px;
+}
+
+.poker-chip--md {
+  width: 2rem;
+  height: 2rem;
+}
+
+.poker-chip--md .poker-chip-text {
+  font-size: 10px;
+}
+
+.poker-chip--lg {
+  width: 3rem;
+  height: 3rem;
+}
+
+.poker-chip--lg .poker-chip-text {
+  font-size: 0.875rem;
+}
+
+/* Colors */
+
+.poker-chip--gray {
+  --chip-bg: #64748b;
+  --chip-text: #ffffff;
+}
+
+.poker-chip--red {
+  --chip-bg: #dc2626;
+  --chip-text: #ffffff;
+}
+
+.poker-chip--blue {
+  --chip-bg: #2563eb;
+  --chip-text: #ffffff;
+}
+
+.poker-chip--green {
+  --chip-bg: #16a34a;
+  --chip-text: #ffffff;
+}
+
+.poker-chip--black {
+  --chip-bg: #1a1a1a;
+  --chip-text: #ffffff;
+}
+
+.poker-chip--purple {
+  --chip-bg: #9333ea;
+  --chip-text: #ffffff;
+}
+
+.poker-chip--yellow {
+  --chip-bg: #eab308;
+  --chip-text: #fde047;
+}
+
+.poker-chip--orange {
+  --chip-bg: #f97316;
+  --chip-text: #fb923c;
+}
+
+.poker-chip--light-blue {
+  --chip-bg: #06b6d4;
+  --chip-text: #22d3ee;
+}
+
+.poker-chip--pink {
+  --chip-bg: #db2777;
+  --chip-text: #f472b6;
+}
+
+@media (min-width: 640px) {
+  .poker-chip--md {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .poker-chip--md .poker-chip-text {
+    font-size: 0.75rem;
+  }
+
+  .poker-chip--lg {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+
+  .poker-chip--lg .poker-chip-text {
+    font-size: 1rem;
+  }
+}
