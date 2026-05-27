@@ -19,10 +19,21 @@ export function BreakRow({ level, onUpdate, onRemove }: BreakRowProps) {
         </div>
       </td>
 
-      <td className="p-2">
+      <td className="p-2 flex flex-col gap-1">
         <span className="text-xs font-bold text-amber-500/80 tracking-widest uppercase">
           {t('tournament.new.level.break')}
         </span>
+        <label className="flex items-center gap-1.5 cursor-pointer group w-fit">
+          <input
+            type="checkbox"
+            checked={level.shouldColorUp || false}
+            onChange={(e) => onUpdate(level.id, 'shouldColorUp' as any, e.target.checked as any)}
+            className="w-3 h-3 rounded border-white/10 bg-[#0a0a0a] text-amber-500 focus:ring-0 cursor-pointer"
+          />
+          <span className="text-[10px] text-amber-500 transition-colors uppercase font-bold flex items-center gap-1">
+            {t('tournament.new.level.colorUp')}
+          </span>
+        </label>
       </td>
 
       <td className="p-2"></td>

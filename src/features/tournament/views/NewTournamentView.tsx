@@ -49,6 +49,7 @@ export function NewTournamentView() {
         ante: l.ante,
         durationInMinutes: l.duration,
         isBreak: l.isBreak,
+        shouldColorUp: l.shouldColorUp,
       })),
     };
 

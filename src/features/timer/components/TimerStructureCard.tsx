@@ -12,9 +12,9 @@ export function TimerBlindsTableCard({ levels, currentIndex }: { levels: any[]; 
         <table className="w-full text-xs text-center text-gray-300 relative">
           <thead className="sticky top-0 bg-background z-10">
             <tr className="text-gray-500 border-b border-white/5">
-              <th className="pb-2">Round</th>
-              <th className="pb-2">Blinds</th>
-              <th className="pb-2">Ante</th>
+              <th className="pb-1">Round</th>
+              <th className="pb-1">Blinds</th>
+              <th className="pb-1">Ante</th>
             </tr>
           </thead>
           <tbody>

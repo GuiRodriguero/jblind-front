@@ -58,6 +58,7 @@ export const resources = {
             addLevel: 'Adicionar Level',
             duration: 'Duração',
             break: 'Intervalo',
+            colorUp: 'Color Up',
             empty: 'Nenhum nível configurado. Clique em "Add Level" para iniciar a estrutura.',
           },
           generalSettings: {
@@ -76,6 +77,7 @@ export const resources = {
         currentBlinds: 'Blinds Atuais',
         nextBlinds: 'Próximos Blinds',
         nextBreakIn: 'Próximo intervalo em',
+        removeLowChips: 'Remova fichas de valores menores',
         playersTitle: 'Jogadores',
         playersLeft: 'Restantes',
         player: 'Jogador',
@@ -144,6 +146,7 @@ export const resources = {
             addLevel: 'Add Level',
             duration: 'Duration',
             break: 'Break',
+            colorUp: 'Color Up',
             empty: 'No levels configured. Click "Add Level" configure your levels.',
           },
           generalSettings: {
@@ -162,6 +165,7 @@ export const resources = {
         currentBlinds: 'Current Blinds',
         nextBlinds: 'Next Blinds',
         nextBreakIn: 'Next break in',
+        removeLowChips: 'Remove low chips',
         playersTitle: 'Players',
         playersLeft: 'Left',
         player: 'Player',
