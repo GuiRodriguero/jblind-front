@@ -23,6 +23,41 @@ export function TimerView() {
   const [timeLeft, setTimeLeft] = useState(0);
   const navigate = useNavigate();
 
+  const handleNextRound = () => {
+    if (tournament && currentLevelIndex < tournament.levels.length - 1) {
+      const nextIndex = currentLevelIndex + 1;
+      setCurrentLevelIndex(nextIndex);
+      setTimeLeft(tournament.levels[nextIndex].durationInMinutes * 60);
+    } else {
+      setIsPlaying(false);
+    }
+  };
+
+  const handlePrevRound = () => {
+    if (tournament && currentLevelIndex > 0) {
+      const prevIndex = currentLevelIndex - 1;
+      setCurrentLevelIndex(prevIndex);
+      setTimeLeft(tournament.levels[prevIndex].durationInMinutes * 60);
+    }
+  };
+
+  const handleEliminatePlayer = (playerId: number) => {
+    setActivePlayers((prev) => {
+      const remainingPlayers = prev.filter((p) => p.id !== playerId);
+
+      if (remainingPlayers.length === 1) {
+        setIsPlaying(false);
+        localStorage.removeItem(`jblind_state_${tournamentId}`);
+        setTimeout(() => {
+          alert(`🎉 Torneio Finalizado! ${remainingPlayers[0].name} é o Campeão!`);
+        }, 300);
+        navigate('/tournaments');
+      }
+
+      return remainingPlayers;
+    });
+  };
+
   useEffect(() => {
     async function loadTournament() {
       if (!tournamentId) return;
@@ -90,41 +125,6 @@ export function TimerView() {
 
     localStorage.setItem(`jblind_state_${tournamentId}`, JSON.stringify(stateToSave));
   }, [timeLeft, currentLevelIndex, activePlayers, tournamentId, loading, tournament]);
-
-  const handleNextRound = () => {
-    if (tournament && currentLevelIndex < tournament.levels.length - 1) {
-      const nextIndex = currentLevelIndex + 1;
-      setCurrentLevelIndex(nextIndex);
-      setTimeLeft(tournament.levels[nextIndex].durationInMinutes * 60);
-    } else {
-      setIsPlaying(false);
-    }
-  };
-
-  const handlePrevRound = () => {
-    if (tournament && currentLevelIndex > 0) {
-      const prevIndex = currentLevelIndex - 1;
-      setCurrentLevelIndex(prevIndex);
-      setTimeLeft(tournament.levels[prevIndex].durationInMinutes * 60);
-    }
-  };
-
-  const handleEliminatePlayer = (playerId: number) => {
-    setActivePlayers((prev) => {
-      const remainingPlayers = prev.filter((p) => p.id !== playerId);
-
-      if (remainingPlayers.length === 1) {
-        setIsPlaying(false);
-        localStorage.removeItem(`jblind_state_${tournamentId}`);
-        setTimeout(() => {
-          alert(`🎉 Torneio Finalizado! ${remainingPlayers[0].name} é o Campeão!`);
-        }, 300);
-        navigate('/tournaments');
-      }
-
-      return remainingPlayers;
-    });
-  };
 
   if (loading) return <div className="p-8 text-white">{t('timer.loading')}</div>;
   if (!tournament) return <div className="p-8 text-white">{t('timer.notFound')}</div>;
