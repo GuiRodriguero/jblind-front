@@ -8,6 +8,7 @@ export const resources = {
         success: 'Sucesso!',
         loading: 'Carregando...',
         emptyResult: 'Nenhum resultado encontrado',
+        cancel: 'Cancelar',
       },
       sidebar: {
         tournaments: 'Torneios',
@@ -32,6 +33,21 @@ export const resources = {
             start: {
               title: 'Iniciar Torneio',
             },
+            menu: {
+              title: 'Abrir menu de ações',
+            },
+            edit: {
+              title: 'Editar',
+            },
+            delete: {
+              title: 'Excluir Torneio',
+            },
+          },
+          deleteModal: {
+            title: 'Excluir torneio',
+            description: 'Tem certeza que deseja excluir o torneio "{{name}}"?',
+            confirm: 'Excluir',
+            deleting: 'Excluindo...',
           },
         },
         new: {
@@ -121,6 +137,21 @@ export const resources = {
             start: {
               title: 'Start Tournament',
             },
+            menu: {
+              title: 'Open actions menu',
+            },
+            edit: {
+              title: 'Edit',
+            },
+            delete: {
+              title: 'Delete Tournament',
+            },
+          },
+          deleteModal: {
+            title: 'Delete tournament',
+            description: 'Are you sure you want to delete the tournament "{{name}}"?',
+            confirm: 'Delete',
+            deleting: 'Deleting...',
           },
         },
         new: {
