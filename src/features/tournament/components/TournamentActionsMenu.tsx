@@ -48,6 +48,7 @@ export function TournamentActionsMenu({
     e.stopPropagation();
     setIsDropdownOpen(false);
     setDropdownPosition(null);
+    window.location.assign(`/tournaments/${tournament.id}/edit`);
   };
 
   const handleDeleteClick = (e: React.MouseEvent) => {

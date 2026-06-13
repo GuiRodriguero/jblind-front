@@ -5,6 +5,7 @@ import { HomeView } from './features/home/views/HomeView';
 import { TimerView } from './features/timer/views/TimerView';
 import { TournamentView } from './features/tournament/views/TournamentView';
 import { NewTournamentView } from './features/tournament/views/NewTournamentView';
+import { EditTournamentView } from './features/tournament/views/EditTournamentView';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/timer" element={<TimerView />} />
         <Route path="/tournaments" element={<TournamentView />} />
         <Route path="/tournaments/new" element={<NewTournamentView />} />
+        <Route path="/tournaments/:tournamentId/edit" element={<EditTournamentView />} />
       </Routes>
     </MainLayout>
   );

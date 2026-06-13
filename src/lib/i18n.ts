@@ -22,6 +22,11 @@ export const resources = {
         title: 'Torneios',
         description: 'Gerencie seus home games e analise eventos passados.',
         newTournament: 'Novo Torneio',
+        edit: {
+          title: 'Editar Torneio',
+          save: 'Salvar Alterações',
+          loading: 'Carregando torneio para edição...',
+        },
         table: {
           name: 'Nome do Torneio',
           dateTime: 'Data e Hora',
@@ -126,6 +131,11 @@ export const resources = {
         title: 'Tournaments',
         description: 'Manage your home games and track past events.',
         newTournament: 'New Tournament',
+        edit: {
+          title: 'Edit Tournament',
+          save: 'Save Changes',
+          loading: 'Loading tournament for editing...',
+        },
         table: {
           name: 'Tournament Name',
           dateTime: 'Date & Time',
