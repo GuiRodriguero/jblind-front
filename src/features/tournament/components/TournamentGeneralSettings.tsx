@@ -1,20 +1,21 @@
 import { Settings2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import * as React from 'react';
 
 export interface TournamentFormData {
-  name: string;
-  date: string;
-  time: string;
-  expectedPlayers: string;
-  buyIn: string;
-  startingStack: string;
-  allowRebuys: boolean;
-  allowAddOn: boolean;
+  readonly name: string;
+  readonly date: string;
+  readonly time: string;
+  readonly expectedPlayers: string;
+  readonly buyIn: string;
+  readonly startingStack: string;
+  readonly allowRebuys: boolean;
+  readonly allowAddOn: boolean;
 }
 
 interface TournamentGeneralSettingsProps {
-  formData: TournamentFormData;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  readonly formData: TournamentFormData;
+  readonly onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export function TournamentGeneralSettings({ formData, onChange }: TournamentGeneralSettingsProps) {

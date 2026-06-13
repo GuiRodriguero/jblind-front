@@ -27,6 +27,7 @@ export function LevelStructureManager({ levels, onLevelsChange }: LevelStructure
       ante: 0,
       duration: lastLevel?.duration || 15,
       isBreak: false,
+      shouldColorUp: false,
     };
 
     onLevelsChange([...levels, newLevel]);

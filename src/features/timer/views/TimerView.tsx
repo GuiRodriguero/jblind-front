@@ -1,3 +1,4 @@
+import newRoundSound from '../../../assets/sounds/new-round-sound.mp3';
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { TimerBlindsTableCard } from '../components/TimerStructureCard';
@@ -21,52 +22,6 @@ export function TimerView() {
   const [currentLevelIndex, setCurrentLevelIndex] = useState(0);
   const [timeLeft, setTimeLeft] = useState(0);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    async function loadTournament() {
-      if (!tournamentId) return;
-      try {
-        const response = await fetch(`http://localhost:8080/v1/tournaments/${tournamentId}`);
-        if (response.ok) {
-          const data = await response.json();
-          setTournament(data);
-
-          const playersCount = Number(data.expectedPlayers) || 0;
-          const stackCount = Number(data.startingStack) || 0;
-          if (playersCount > 0) {
-            const initialPlayers = Array.from({ length: playersCount }).map((_, i) => ({
-              id: i + 1,
-              name: `Player ${i + 1}`,
-              seat: i + 1,
-              chips: stackCount,
-            }));
-            setActivePlayers(initialPlayers);
-          }
-
-          setTimeLeft(data.levels[0].durationInMinutes * 60);
-        }
-      } catch (error) {
-        console.error('Error loading tournament:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadTournament();
-  }, [tournamentId]);
-
-  useEffect(() => {
-    let interval: ReturnType<typeof setInterval>;
-
-    if (isPlaying && timeLeft > 0) {
-      interval = setInterval(() => {
-        setTimeLeft((prevTime) => prevTime - 1);
-      }, 1000);
-    } else if (timeLeft === 0 && isPlaying) {
-      handleNextRound();
-    }
-
-    return () => clearInterval(interval);
-  }, [isPlaying, timeLeft]);
 
   const handleNextRound = () => {
     if (tournament && currentLevelIndex < tournament.levels.length - 1) {
@@ -92,6 +47,7 @@ export function TimerView() {
 
       if (remainingPlayers.length === 1) {
         setIsPlaying(false);
+        localStorage.removeItem(`jblind_state_${tournamentId}`);
         setTimeout(() => {
           alert(`🎉 Torneio Finalizado! ${remainingPlayers[0].name} é o Campeão!`);
         }, 300);
@@ -101,6 +57,74 @@ export function TimerView() {
       return remainingPlayers;
     });
   };
+
+  useEffect(() => {
+    async function loadTournament() {
+      if (!tournamentId) return;
+      try {
+        const response = await fetch(`http://localhost:8080/v1/tournaments/${tournamentId}`);
+        if (response.ok) {
+          const data = await response.json();
+          setTournament(data);
+
+          const savedState = localStorage.getItem(`jblind_state_${tournamentId}`);
+
+          if (savedState) {
+            const parsed = JSON.parse(savedState);
+            setTimeLeft(parsed.timeLeft);
+            setCurrentLevelIndex(parsed.currentLevelIndex);
+            setActivePlayers(parsed.activePlayers);
+          } else {
+            const playersCount = Number(data.expectedPlayers) || 0;
+            const stackCount = Number(data.startingStack) || 0;
+            if (playersCount > 0) {
+              const initialPlayers = Array.from({ length: playersCount }).map((_, i) => ({
+                id: i + 1,
+                name: `Player ${i + 1}`,
+                seat: i + 1,
+                chips: stackCount,
+              }));
+              setActivePlayers(initialPlayers);
+            }
+          }
+
+          setTimeLeft(data.levels[0].durationInMinutes * 60);
+        }
+      } catch (error) {
+        console.error('Error loading tournament:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadTournament();
+  }, [tournamentId]);
+
+  useEffect(() => {
+    let interval: ReturnType<typeof setInterval>;
+
+    if (isPlaying && timeLeft > 0) {
+      interval = setInterval(() => {
+        setTimeLeft((prevTime) => prevTime - 1);
+      }, 1000);
+    } else if (timeLeft === 0 && isPlaying) {
+      new Audio(newRoundSound).play();
+      handleNextRound();
+    }
+
+    return () => clearInterval(interval);
+  }, [isPlaying, timeLeft]);
+
+  useEffect(() => {
+    if (loading || !tournament) return;
+
+    const stateToSave = {
+      timeLeft,
+      currentLevelIndex,
+      activePlayers,
+    };
+
+    localStorage.setItem(`jblind_state_${tournamentId}`, JSON.stringify(stateToSave));
+  }, [timeLeft, currentLevelIndex, activePlayers, tournamentId, loading, tournament]);
 
   if (loading) return <div className="p-8 text-white">{t('timer.loading')}</div>;
   if (!tournament) return <div className="p-8 text-white">{t('timer.notFound')}</div>;
@@ -134,7 +158,7 @@ export function TimerView() {
     if (currentLevel.isBreak) {
       return (
         <div className="flex items-center gap-4 xl:mb-6">
-          <span>BREAK</span>
+          <span className="uppercase">{t('timer.break')}</span>
           <CoffeeAnimated />
         </div>
       );
@@ -154,7 +178,7 @@ export function TimerView() {
         <TimerClockBoard
           isPlaying={isPlaying}
           timeLeft={timeLeft}
-          roundName={currentLevel.isBreak ? 'BREAK' : `ROUND ${currentLevel.roundNumber}`}
+          roundName={currentLevel.isBreak ? `${t('timer.break')}` : `ROUND ${currentLevel.roundNumber}`}
           isBreak={currentLevel.isBreak}
           shouldColorUp={currentLevel.shouldColorUp}
           currentBlinds={currentBlindsInfo()}

@@ -1,19 +1,57 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowLeft, ArrowRight, Save } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { LevelStructureManager } from '../components/LevelStructureManager';
 import { TournamentGeneralSettings, type TournamentFormData } from '../components/TournamentGeneralSettings';
 import type { TournamentLevel } from '../types/tournament.types';
-import { buildTournamentPayload, EMPTY_TOURNAMENT_FORM_DATA } from '../utils/tournamentFormMapper';
+import {
+  buildTournamentPayload,
+  EMPTY_TOURNAMENT_FORM_DATA,
+  mapTournamentToFormState,
+} from '../utils/tournamentFormMapper';
 
-export function NewTournamentView() {
+export function EditTournamentView() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { tournamentId } = useParams<{ tournamentId: string }>();
+
   const [step, setStep] = useState<1 | 2>(1);
   const [levels, setLevels] = useState<TournamentLevel[]>([]);
   const [formData, setFormData] = useState<TournamentFormData>(EMPTY_TOURNAMENT_FORM_DATA);
+  const [isLoadingTournament, setIsLoadingTournament] = useState(true);
+
+  useEffect(() => {
+    async function loadTournament() {
+      if (!tournamentId) {
+        navigate('/tournaments');
+        return;
+      }
+
+      try {
+        const response = await fetch(`http://localhost:8080/v1/tournaments/${tournamentId}`);
+
+        if (response.ok) {
+          const data = await response.json();
+          const mappedState = mapTournamentToFormState(data);
+
+          setFormData(mappedState.formData);
+          setLevels(mappedState.levels);
+        } else {
+          console.error('Error loading tournament for editing.');
+          navigate('/tournaments');
+        }
+      } catch (error) {
+        console.error('Error connecting with API.', error);
+        navigate('/tournaments');
+      } finally {
+        setIsLoadingTournament(false);
+      }
+    }
+
+    loadTournament();
+  }, [navigate, tournamentId]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -24,11 +62,15 @@ export function NewTournamentView() {
   };
 
   const handleSave = async () => {
+    if (!tournamentId) {
+      return;
+    }
+
     const payload = buildTournamentPayload(formData, levels);
 
     try {
-      const response = await fetch('http://localhost:8080/v1/tournaments/new', {
-        method: 'POST',
+      const response = await fetch(`http://localhost:8080/v1/tournaments/${tournamentId}`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
@@ -36,7 +78,7 @@ export function NewTournamentView() {
       if (response.ok) {
         navigate('/tournaments');
       } else {
-        console.error('Error creating tournament', await response.json());
+        console.error('Error updating tournament', await response.json());
       }
     } catch (error) {
       console.error('Error connecting with API.', error);
@@ -60,7 +102,7 @@ export function NewTournamentView() {
         </div>
       ),
       primaryAction: handleSave,
-      primaryLabel: t('tournament.new.save'),
+      primaryLabel: t('tournament.edit.save'),
       primaryIcon: <Save size={16} />,
       primaryClass: 'bg-green-600 hover:bg-green-700',
     },
@@ -68,17 +110,21 @@ export function NewTournamentView() {
 
   const currentStep = stepsConfig[step - 1];
 
+  if (isLoadingTournament) {
+    return <div className="p-8 text-white">{t('tournament.edit.loading')}</div>;
+  }
+
   return (
     <div className="p-8 h-full flex flex-col max-w-4xl mx-auto w-full">
       <div className="flex items-center gap-4 mb-8">
         <button
-          onClick={() => (step === 1 ? navigate(-1) : setStep(1))}
+          onClick={() => (step === 1 ? navigate('/tournaments') : setStep(1))}
           className="p-2 hover:bg-white/10 rounded-lg text-gray-400 hover:text-white transition-colors"
         >
           <ArrowLeft size={20} />
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">{t('tournament.new.create')}</h1>
+          <h1 className="text-2xl font-bold text-white tracking-tight">{t('tournament.edit.title')}</h1>
           <p className="text-sm text-gray-400">{currentStep.title}</p>
         </div>
       </div>

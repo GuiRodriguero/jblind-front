@@ -8,6 +8,7 @@ export const resources = {
         success: 'Sucesso!',
         loading: 'Carregando...',
         emptyResult: 'Nenhum resultado encontrado',
+        cancel: 'Cancelar',
       },
       sidebar: {
         tournaments: 'Torneios',
@@ -21,6 +22,11 @@ export const resources = {
         title: 'Torneios',
         description: 'Gerencie seus home games e analise eventos passados.',
         newTournament: 'Novo Torneio',
+        edit: {
+          title: 'Editar Torneio',
+          save: 'Salvar Alterações',
+          loading: 'Carregando torneio para edição...',
+        },
         table: {
           name: 'Nome do Torneio',
           dateTime: 'Data e Hora',
@@ -32,6 +38,21 @@ export const resources = {
             start: {
               title: 'Iniciar Torneio',
             },
+            menu: {
+              title: 'Abrir menu de ações',
+            },
+            edit: {
+              title: 'Editar',
+            },
+            delete: {
+              title: 'Excluir Torneio',
+            },
+          },
+          deleteModal: {
+            title: 'Excluir torneio',
+            description: 'Tem certeza que deseja excluir o torneio "{{name}}"?',
+            confirm: 'Excluir',
+            deleting: 'Excluindo...',
           },
         },
         new: {
@@ -77,6 +98,7 @@ export const resources = {
         currentBlinds: 'Blinds Atuais',
         nextBlinds: 'Próximos Blinds',
         nextBreakIn: 'Próximo intervalo em',
+        break: 'Intervalo',
         removeLowChips: 'Remova fichas de valores menores',
         playersTitle: 'Jogadores',
         playersLeft: 'Restantes',
@@ -109,6 +131,11 @@ export const resources = {
         title: 'Tournaments',
         description: 'Manage your home games and track past events.',
         newTournament: 'New Tournament',
+        edit: {
+          title: 'Edit Tournament',
+          save: 'Save Changes',
+          loading: 'Loading tournament for editing...',
+        },
         table: {
           name: 'Tournament Name',
           dateTime: 'Date & Time',
@@ -120,6 +147,21 @@ export const resources = {
             start: {
               title: 'Start Tournament',
             },
+            menu: {
+              title: 'Open actions menu',
+            },
+            edit: {
+              title: 'Edit',
+            },
+            delete: {
+              title: 'Delete Tournament',
+            },
+          },
+          deleteModal: {
+            title: 'Delete tournament',
+            description: 'Are you sure you want to delete the tournament "{{name}}"?',
+            confirm: 'Delete',
+            deleting: 'Deleting...',
           },
         },
         new: {
@@ -165,6 +207,7 @@ export const resources = {
         currentBlinds: 'Current Blinds',
         nextBlinds: 'Next Blinds',
         nextBreakIn: 'Next break in',
+        break: 'Break',
         removeLowChips: 'Remove low chips',
         playersTitle: 'Players',
         playersLeft: 'Left',
