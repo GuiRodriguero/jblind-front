@@ -101,12 +101,13 @@ export function TimerView() {
             setCurrentLevelIndex(parsed.currentLevelIndex);
             setActivePlayers(parsed.activePlayers);
           } else {
-            const playersCount = Number(data.expectedPlayers) || 0;
             const stackCount = Number(data.startingStack) || 0;
+            const persistedPlayers = Array.isArray(data.players) ? data.players : [];
+            const playersCount = persistedPlayers.length || Number(data.expectedPlayers) || 0;
             if (playersCount > 0) {
               const initialPlayers = Array.from({ length: playersCount }).map((_, i) => ({
                 id: i + 1,
-                name: `Player ${i + 1}`,
+                name: persistedPlayers[i]?.name ?? `Player ${i + 1}`,
                 seat: i + 1,
                 chips: stackCount,
               }));
@@ -228,7 +229,11 @@ export function TimerView() {
       <div className="grid grid-cols-12 gap-6 flex-1 min-h-0">
         <div className="col-span-3 flex flex-col gap-6 h-full min-h-0">
           <TimerBlindsTableCard levels={tournament.levels} currentIndex={currentLevelIndex} />
-          <TimerPrizePoolCard buyIn={tournament.buyIn} totalPlayers={tournament.expectedPlayers} />
+          <TimerPrizePoolCard
+            buyIn={tournament.buyIn}
+            totalPlayers={tournament.expectedPlayers}
+            payouts={tournament.prize?.payouts ?? []}
+          />
         </div>
 
         <TimerClockBoard

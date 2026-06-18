@@ -8,3 +8,22 @@ export interface TournamentLevel {
   isBreak: boolean;
   shouldColorUp?: boolean;
 }
+
+export interface TournamentPlayer {
+  id: string;
+  name: string;
+}
+
+export type PrizeMode = 'fixed' | 'percentage';
+
+export interface PrizePayout {
+  id: string;
+  position: number;
+  value: number;
+  percentage: number;
+}
+
+export interface PrizeSettings {
+  mode: PrizeMode;
+  payouts: PrizePayout[];
+}
