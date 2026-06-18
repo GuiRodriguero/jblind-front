@@ -9,7 +9,7 @@ interface LevelStructureManagerProps {
   readonly onLevelsChange: (levels: TournamentLevel[]) => void;
 }
 
-export function LevelStructureManager({ levels, onLevelsChange }: LevelStructureManagerProps) {
+export function TournamentLevelStructureManagerStep({ levels, onLevelsChange }: LevelStructureManagerProps) {
   const { t } = useTranslation();
   const [currentRound, setCurrentRound] = useState(1);
 
