@@ -1,14 +1,33 @@
 import { useTranslation } from 'react-i18next';
 
-export function TimerPrizePoolCard({ buyIn, totalPlayers }: { buyIn: number; totalPlayers: number }) {
+interface PrizePayout {
+  readonly position: number;
+  readonly value: number;
+  readonly percentage?: number;
+}
+
+interface TimerPrizePoolCardProps {
+  readonly buyIn: number;
+  readonly totalPlayers: number;
+  readonly payouts?: PrizePayout[];
+}
+
+const ordinal = (position: number) => {
+  const suffixes = ['th', 'st', 'nd', 'rd'];
+  const remainder = position % 100;
+  return `${position}${suffixes[(remainder - 20) % 10] ?? suffixes[remainder] ?? suffixes[0]}`;
+};
+
+export function TimerPrizePoolCard({ buyIn, totalPlayers, payouts = [] }: TimerPrizePoolCardProps) {
   const { t } = useTranslation();
   const totalPool = buyIn * totalPlayers;
 
-  const prizes = [
-    { pos: '1st', val: `$${(totalPool * 0.5).toFixed(2)}` },
-    { pos: '2nd', val: `$${(totalPool * 0.3).toFixed(2)}` },
-    { pos: '3rd', val: `$${(totalPool * 0.2).toFixed(2)}` },
-  ];
+  const sortedPayouts = [...payouts].sort((a, b) => a.position - b.position);
+
+  const prizes = sortedPayouts.map((payout) => ({
+    pos: ordinal(payout.position),
+    val: `$${Number(payout.value || 0).toFixed(2)}`,
+  }));
 
   return (
     <div className="flex-1 bg-white/5 rounded-2xl border border-white/10 p-4 flex flex-col overflow-hidden min-h-0">
@@ -16,7 +35,7 @@ export function TimerPrizePoolCard({ buyIn, totalPlayers }: { buyIn: number; tot
         {t('timer.prizePool')}
       </h2>
       <div className="overflow-y-auto flex-1 pr-2 custom-scrollbar space-y-3">
-        {totalPool > 0 ? (
+        {prizes.length > 0 ? (
           prizes.map((prize) => (
             <div
               key={prize.pos}
@@ -27,7 +46,9 @@ export function TimerPrizePoolCard({ buyIn, totalPlayers }: { buyIn: number; tot
             </div>
           ))
         ) : (
-          <p className="text-center text-gray-500 text-xs mt-4">{t('timer.freeTournament')}</p>
+          <p className="text-center text-gray-500 text-xs mt-4">
+            {totalPool > 0 ? `$${totalPool.toFixed(2)}` : t('timer.freeTournament')}
+          </p>
         )}
       </div>
     </div>

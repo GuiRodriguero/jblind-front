@@ -6,7 +6,6 @@ export interface TournamentFormData {
   readonly name: string;
   readonly date: string;
   readonly time: string;
-  readonly expectedPlayers: string;
   readonly buyIn: string;
   readonly startingStack: string;
   readonly allowRebuys: boolean;
@@ -18,7 +17,7 @@ interface TournamentGeneralSettingsProps {
   readonly onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export function TournamentGeneralSettings({ formData, onChange }: TournamentGeneralSettingsProps) {
+export function TournamentGeneralSettingsStep({ formData, onChange }: TournamentGeneralSettingsProps) {
   const { t } = useTranslation();
 
   return (
@@ -62,18 +61,6 @@ export function TournamentGeneralSettings({ formData, onChange }: TournamentGene
               className="bg-[#0a0a0a] border border-white/10 rounded-lg px-3 py-2 text-white outline-none focus:border-blue-500 scheme-dark"
             />
           </div>
-        </div>
-
-        <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium text-gray-400 ml-1">{t('tournament.new.expectedPlayers')}</label>
-          <input
-            type="number"
-            name="expectedPlayers"
-            value={formData.expectedPlayers}
-            onChange={onChange}
-            placeholder={t('tournament.new.placeholder.players')}
-            className="bg-[#0a0a0a] border border-white/10 rounded-lg px-3 py-2 text-white outline-none focus:border-blue-500"
-          />
         </div>
 
         <div className="flex flex-col gap-1.5">

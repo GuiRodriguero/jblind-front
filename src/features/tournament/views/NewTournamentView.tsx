@@ -3,16 +3,25 @@ import { ArrowLeft, ArrowRight, Save } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import { LevelStructureManager } from '../components/LevelStructureManager';
-import { TournamentGeneralSettings, type TournamentFormData } from '../components/TournamentGeneralSettings';
-import type { TournamentLevel } from '../types/tournament.types';
-import { buildTournamentPayload, EMPTY_TOURNAMENT_FORM_DATA } from '../utils/tournamentFormMapper';
+import { TournamentLevelStructureManagerStep } from '../components/TournamentLevelStructureManagerStep.tsx';
+import { TournamentGeneralSettingsStep, type TournamentFormData } from '../components/TournamentGeneralSettingsStep.tsx';
+import { TournamentPlayersStep } from '../components/TournamentPlayersStep.tsx';
+import { TournamentPrizesStep } from '../components/TournamentPrizesStep.tsx';
+import type { PrizeSettings, TournamentLevel, TournamentPlayer } from '../types/tournament.types';
+import {
+  buildTournamentPayload,
+  EMPTY_PRIZE_SETTINGS,
+  EMPTY_TOURNAMENT_FORM_DATA,
+  EMPTY_TOURNAMENT_PLAYERS,
+} from '../utils/tournamentFormMapper';
 
 export function NewTournamentView() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [step, setStep] = useState<1 | 2>(1);
+  const [step, setStep] = useState(1);
   const [levels, setLevels] = useState<TournamentLevel[]>([]);
+  const [players, setPlayers] = useState<TournamentPlayer[]>(EMPTY_TOURNAMENT_PLAYERS);
+  const [prizes, setPrizes] = useState<PrizeSettings>(EMPTY_PRIZE_SETTINGS);
   const [formData, setFormData] = useState<TournamentFormData>(EMPTY_TOURNAMENT_FORM_DATA);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,7 +33,7 @@ export function NewTournamentView() {
   };
 
   const handleSave = async () => {
-    const payload = buildTournamentPayload(formData, levels);
+    const payload = buildTournamentPayload(formData, levels, players, prizes);
 
     try {
       const response = await fetch('http://localhost:8080/v1/tournaments/new', {
@@ -46,7 +55,7 @@ export function NewTournamentView() {
   const stepsConfig = [
     {
       title: t('tournament.new.generalSettings.stepTitle'),
-      content: <TournamentGeneralSettings formData={formData} onChange={handleInputChange} />,
+      content: <TournamentGeneralSettingsStep formData={formData} onChange={handleInputChange} />,
       primaryAction: () => setStep(2),
       primaryLabel: t('tournament.new.next'),
       primaryIcon: <ArrowRight size={16} />,
@@ -56,8 +65,30 @@ export function NewTournamentView() {
       title: t('tournament.new.blindStructure.stepTitle'),
       content: (
         <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-          <LevelStructureManager levels={levels} onLevelsChange={setLevels} />
+          <TournamentLevelStructureManagerStep levels={levels} onLevelsChange={setLevels} />
         </div>
+      ),
+      primaryAction: () => setStep(3),
+      primaryLabel: t('tournament.new.next'),
+      primaryIcon: <ArrowRight size={16} />,
+      primaryClass: 'bg-blue-600 hover:bg-blue-700',
+    },
+    {
+      title: t('tournament.new.players.stepTitle'),
+      content: <TournamentPlayersStep players={players} onPlayersChange={setPlayers} />,
+      primaryAction: () => setStep(4),
+      primaryLabel: t('tournament.new.next'),
+      primaryIcon: <ArrowRight size={16} />,
+      primaryClass: 'bg-blue-600 hover:bg-blue-700',
+    },
+    {
+      title: t('tournament.new.prizes.stepTitle'),
+      content: (
+        <TournamentPrizesStep
+          prizes={prizes}
+          onPrizesChange={setPrizes}
+          prizePool={players.length * (Number(formData.buyIn) || 0)}
+        />
       ),
       primaryAction: handleSave,
       primaryLabel: t('tournament.new.save'),
@@ -72,7 +103,7 @@ export function NewTournamentView() {
     <div className="p-8 h-full flex flex-col max-w-4xl mx-auto w-full">
       <div className="flex items-center gap-4 mb-8">
         <button
-          onClick={() => (step === 1 ? navigate(-1) : setStep(1))}
+          onClick={() => (step === 1 ? navigate(-1) : setStep(step - 1))}
           className="p-2 hover:bg-white/10 rounded-lg text-gray-400 hover:text-white transition-colors"
         >
           <ArrowLeft size={20} />

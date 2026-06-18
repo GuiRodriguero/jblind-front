@@ -1,5 +1,5 @@
-import type { TournamentFormData } from '../components/TournamentGeneralSettings';
-import type { TournamentLevel } from '../types/tournament.types';
+import type { TournamentFormData } from '../components/TournamentGeneralSettingsStep.tsx';
+import type { PrizeSettings, TournamentLevel, TournamentPlayer } from '../types/tournament.types';
 
 interface ApiTournamentLevel {
   readonly id?: string | number;
@@ -12,6 +12,22 @@ interface ApiTournamentLevel {
   readonly shouldColorUp?: boolean;
 }
 
+interface ApiTournamentPlayer {
+  readonly id?: string | number;
+  readonly name: string;
+}
+
+interface ApiPrizePayout {
+  readonly position: number;
+  readonly value: number;
+  readonly percentage: number;
+}
+
+interface ApiPrizeSettings {
+  readonly mode: 'fixed' | 'percentage';
+  readonly payouts: ApiPrizePayout[];
+}
+
 interface ApiTournament {
   readonly name: string;
   readonly scheduledAt: string;
@@ -21,24 +37,37 @@ interface ApiTournament {
   readonly allowRebuys: boolean;
   readonly allowAddOn: boolean;
   readonly levels: ApiTournamentLevel[];
+  readonly players?: ApiTournamentPlayer[];
+  readonly prize?: ApiPrizeSettings;
 }
 
 export const EMPTY_TOURNAMENT_FORM_DATA: TournamentFormData = {
   name: '',
   date: '',
   time: '',
-  expectedPlayers: '',
   buyIn: '',
   startingStack: '',
   allowRebuys: false,
   allowAddOn: false,
 };
 
-export function buildTournamentPayload(formData: TournamentFormData, levels: TournamentLevel[]) {
+export const EMPTY_TOURNAMENT_PLAYERS: TournamentPlayer[] = [];
+
+export const EMPTY_PRIZE_SETTINGS: PrizeSettings = {
+  mode: 'fixed',
+  payouts: [],
+};
+
+export function buildTournamentPayload(
+  formData: TournamentFormData,
+  levels: TournamentLevel[],
+  players: TournamentPlayer[] = EMPTY_TOURNAMENT_PLAYERS,
+  prizes: PrizeSettings = EMPTY_PRIZE_SETTINGS,
+) {
   return {
     name: formData.name,
     scheduledAt: `${formData.date}T${formData.time}:00`,
-    expectedPlayers: Number(formData.expectedPlayers),
+    expectedPlayers: players.length,
     buyIn: Number(formData.buyIn),
     startingStack: Number(formData.startingStack),
     allowRebuys: formData.allowRebuys ?? false,
@@ -52,12 +81,22 @@ export function buildTournamentPayload(formData: TournamentFormData, levels: Tou
       isBreak: level.isBreak,
       shouldColorUp: level.shouldColorUp,
     })),
+    players: players.map((player) => ({ name: player.name })),
+    prize: {
+      mode: prizes.mode,
+      payouts: prizes.payouts.map((payout) => ({
+        position: payout.position,
+        value: payout.value,
+      })),
+    },
   };
 }
 
 export function mapTournamentToFormState(tournament: ApiTournament): {
   formData: TournamentFormData;
   levels: TournamentLevel[];
+  players: TournamentPlayer[];
+  prizes: PrizeSettings;
 } {
   const [date = '', timeWithSeconds = ''] = tournament.scheduledAt.split('T');
   const [hours = '', minutes = ''] = timeWithSeconds.split(':');
@@ -67,7 +106,6 @@ export function mapTournamentToFormState(tournament: ApiTournament): {
       name: tournament.name,
       date,
       time: `${hours}:${minutes}`,
-      expectedPlayers: String(tournament.expectedPlayers),
       buyIn: String(tournament.buyIn),
       startingStack: String(tournament.startingStack),
       allowRebuys: tournament.allowRebuys,
@@ -83,5 +121,18 @@ export function mapTournamentToFormState(tournament: ApiTournament): {
       isBreak: level.isBreak,
       shouldColorUp: level.shouldColorUp,
     })),
+    players: (tournament.players ?? []).map((player) => ({
+      id: String(player.id ?? crypto.randomUUID()),
+      name: player.name,
+    })),
+    prizes: {
+      mode: tournament.prize?.mode ?? 'fixed',
+      payouts: (tournament.prize?.payouts ?? []).map((payout) => ({
+        id: crypto.randomUUID(),
+        position: payout.position,
+        value: payout.value,
+        percentage: payout.percentage,
+      })),
+    },
   };
 }

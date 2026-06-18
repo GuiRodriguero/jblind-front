@@ -1,5 +1,5 @@
 import newRoundSound from '../../../assets/sounds/new-round-sound.mp3';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { TimerBlindsTableCard } from '../components/TimerStructureCard';
 import { TimerPrizePoolCard } from '../components/TimerPrizePoolCard';
@@ -21,7 +21,33 @@ export function TimerView() {
   const [activePlayers, setActivePlayers] = useState<Player[]>([]);
   const [currentLevelIndex, setCurrentLevelIndex] = useState(0);
   const [timeLeft, setTimeLeft] = useState(0);
+  const wakeLockRef = useRef<WakeLockSentinel | null>(null);
   const navigate = useNavigate();
+
+  const releaseWakeLock = async () => {
+    if (!wakeLockRef.current) return;
+
+    try {
+      await wakeLockRef.current.release();
+    } catch (error) {
+      console.error('Error releasing wake lock:', error);
+    } finally {
+      wakeLockRef.current = null;
+    }
+  };
+
+  const requestWakeLock = async () => {
+    if (!('wakeLock' in navigator) || wakeLockRef.current) return;
+
+    try {
+      wakeLockRef.current = await navigator.wakeLock.request('screen');
+      wakeLockRef.current.addEventListener('release', () => {
+        wakeLockRef.current = null;
+      });
+    } catch (error) {
+      console.error('Error requesting wake lock:', error);
+    }
+  };
 
   const handleNextRound = () => {
     if (tournament && currentLevelIndex < tournament.levels.length - 1) {
@@ -75,12 +101,13 @@ export function TimerView() {
             setCurrentLevelIndex(parsed.currentLevelIndex);
             setActivePlayers(parsed.activePlayers);
           } else {
-            const playersCount = Number(data.expectedPlayers) || 0;
             const stackCount = Number(data.startingStack) || 0;
+            const persistedPlayers = Array.isArray(data.players) ? data.players : [];
+            const playersCount = persistedPlayers.length || Number(data.expectedPlayers) || 0;
             if (playersCount > 0) {
               const initialPlayers = Array.from({ length: playersCount }).map((_, i) => ({
                 id: i + 1,
-                name: `Player ${i + 1}`,
+                name: persistedPlayers[i]?.name ?? `Player ${i + 1}`,
                 seat: i + 1,
                 chips: stackCount,
               }));
@@ -106,13 +133,43 @@ export function TimerView() {
       interval = setInterval(() => {
         setTimeLeft((prevTime) => prevTime - 1);
       }, 1000);
-    } else if (timeLeft === 0 && isPlaying) {
-      new Audio(newRoundSound).play();
-      handleNextRound();
     }
 
     return () => clearInterval(interval);
   }, [isPlaying, timeLeft]);
+
+  useEffect(() => {
+    if (!(isPlaying && timeLeft === 0)) return;
+
+    new Audio(newRoundSound).play();
+    const timeoutId = setTimeout(() => {
+      handleNextRound();
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
+  }, [isPlaying, timeLeft, currentLevelIndex, tournament]);
+
+  useEffect(() => {
+    if (isPlaying) {
+      requestWakeLock();
+    } else {
+      releaseWakeLock();
+    }
+  }, [isPlaying]);
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState !== 'visible' || !isPlaying) return;
+      requestWakeLock();
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      releaseWakeLock();
+    };
+  }, [isPlaying]);
 
   useEffect(() => {
     if (loading || !tournament) return;
@@ -172,7 +229,11 @@ export function TimerView() {
       <div className="grid grid-cols-12 gap-6 flex-1 min-h-0">
         <div className="col-span-3 flex flex-col gap-6 h-full min-h-0">
           <TimerBlindsTableCard levels={tournament.levels} currentIndex={currentLevelIndex} />
-          <TimerPrizePoolCard buyIn={tournament.buyIn} totalPlayers={tournament.expectedPlayers} />
+          <TimerPrizePoolCard
+            buyIn={tournament.buyIn}
+            totalPlayers={tournament.expectedPlayers}
+            payouts={tournament.prize?.payouts ?? []}
+          />
         </div>
 
         <TimerClockBoard
