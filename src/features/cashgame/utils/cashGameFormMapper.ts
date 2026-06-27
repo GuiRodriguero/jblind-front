@@ -9,6 +9,7 @@ interface ApiCashGamePlayer {
 
 interface ApiCashGame {
   readonly name: string;
+  readonly scheduledAt: string;
   readonly smallBlind: number;
   readonly bigBlind: number;
   readonly minBuyIn: number;
@@ -18,6 +19,8 @@ interface ApiCashGame {
 
 export const EMPTY_CASH_GAME_FORM_DATA: CashGameFormData = {
   name: '',
+  date: '',
+  time: '',
   smallBlind: '',
   bigBlind: '',
   minBuyIn: '',
@@ -32,6 +35,7 @@ export function buildCashGamePayload(
 ) {
   return {
     name: formData.name,
+    scheduledAt: `${formData.date}T${formData.time}:00`,
     smallBlind: Number(formData.smallBlind),
     bigBlind: Number(formData.bigBlind),
     minBuyIn: Number(formData.minBuyIn),
@@ -44,9 +48,14 @@ export function mapCashGameToFormState(cashGame: ApiCashGame): {
   formData: CashGameFormData;
   players: CashGamePlayer[];
 } {
+  const [date = '', timeWithSeconds = ''] = cashGame.scheduledAt.split('T');
+  const [hours = '', minutes = ''] = timeWithSeconds.split(':');
+
   return {
     formData: {
       name: cashGame.name,
+      date,
+      time: `${hours}:${minutes}`,
       smallBlind: String(cashGame.smallBlind),
       bigBlind: String(cashGame.bigBlind),
       minBuyIn: String(cashGame.minBuyIn),

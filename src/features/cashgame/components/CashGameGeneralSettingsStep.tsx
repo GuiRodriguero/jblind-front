@@ -4,6 +4,8 @@ import * as React from 'react';
 
 export interface CashGameFormData {
   readonly name: string;
+  readonly date: string;
+  readonly time: string;
   readonly smallBlind: string;
   readonly bigBlind: string;
   readonly minBuyIn: string;
@@ -35,6 +37,26 @@ export function CashGameGeneralSettingsStep({ formData, onChange }: CashGameGene
             onChange={onChange}
             placeholder={t('cashgame.new.placeholder.name')}
             className="bg-[#0a0a0a] border border-white/10 rounded-lg px-3 py-2 text-white outline-none focus:border-blue-500"
+          />
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <label className="text-sm font-medium text-gray-400 ml-1">{t('cashgame.new.date')}</label>
+          <input
+            type="date"
+            name="date"
+            value={formData.date}
+            onChange={onChange}
+            className="bg-[#0a0a0a] border border-white/10 rounded-lg px-3 py-2 text-white outline-none focus:border-blue-500 scheme-dark"
+          />
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <label className="text-sm font-medium text-gray-400 ml-1">{t('cashgame.new.time')}</label>
+          <input
+            type="time"
+            name="time"
+            value={formData.time}
+            onChange={onChange}
+            className="bg-[#0a0a0a] border border-white/10 rounded-lg px-3 py-2 text-white outline-none focus:border-blue-500 scheme-dark"
           />
         </div>
 
