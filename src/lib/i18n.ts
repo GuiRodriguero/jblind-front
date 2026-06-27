@@ -12,6 +12,7 @@ export const resources = {
       },
       sidebar: {
         tournaments: 'Torneios',
+        cashGames: 'Cash Games',
         settings: 'Configurações',
       },
       home: {
@@ -114,6 +115,75 @@ export const resources = {
           },
         },
       },
+      cashgame: {
+        title: 'Cash Games',
+        description: 'Gerencie seus cash games e os jogadores de cada mesa.',
+        newCashGame: 'Novo Cash Game',
+        edit: {
+          title: 'Editar Cash Game',
+          save: 'Salvar Alterações',
+          loading: 'Carregando cash game para edição...',
+        },
+        table: {
+          name: 'Nome do Cash Game',
+          blinds: 'Blinds (SB/BB)',
+          buyIn: 'Buy-In (Min/Max)',
+          players: 'Jogadores',
+          action: 'Ação',
+          empty: 'Nenhum cash game encontrado. Clique em "Novo Cash Game" para começar.',
+          button: {
+            start: {
+              title: 'Iniciar Cash Game',
+            },
+            menu: {
+              title: 'Abrir menu de ações',
+            },
+            edit: {
+              title: 'Editar',
+            },
+            delete: {
+              title: 'Excluir Cash Game',
+            },
+          },
+          deleteModal: {
+            title: 'Excluir cash game',
+            description: 'Tem certeza que deseja excluir o cash game "{{name}}"?',
+            confirm: 'Excluir',
+            deleting: 'Excluindo...',
+          },
+        },
+        new: {
+          create: 'Criar Novo Cash Game',
+          generalSettingsTitle: 'Configurações Gerais',
+          name: 'Nome do Cash Game',
+          smallBlind: 'Small Blind',
+          bigBlind: 'Big Blind',
+          minBuyIn: 'Buy-In Mínimo (R$)',
+          maxBuyIn: 'Buy-In Máximo (R$)',
+          next: 'Próximo',
+          save: 'Salvar Cash Game',
+          placeholder: {
+            name: 'Ex.: Mesa de Sexta',
+            smallBlind: 'Ex.: 1',
+            bigBlind: 'Ex.: 2',
+            minBuyIn: 'Ex.: R$50',
+            maxBuyIn: 'Ex.: R$200',
+          },
+          generalSettings: {
+            stepTitle: 'Passo 1: Configurações Gerais & Blinds',
+            title: 'Configurações Gerais',
+          },
+          players: {
+            stepTitle: 'Passo 2: Jogadores',
+            title: 'Jogadores',
+            placeholder: 'Nome do jogador',
+            buyInPlaceholder: 'Buy-In',
+            addPlayer: 'Adicionar Jogador',
+            remove: 'Remover jogador',
+            empty: 'Nenhum jogador adicionado. Clique em "Adicionar Jogador" para começar.',
+          },
+        },
+      },
       timer: {
         loading: 'Carregando torneio...',
         notFound: 'Torneio não encontrado',
@@ -143,6 +213,7 @@ export const resources = {
       },
       sidebar: {
         tournaments: 'Tournaments',
+        cashGames: 'Cash Games',
         settings: 'Settings',
       },
       home: {
@@ -242,6 +313,75 @@ export const resources = {
             total: 'Total',
             pool: 'Prize Pool',
             remaining: 'Remaining',
+          },
+        },
+      },
+      cashgame: {
+        title: 'Cash Games',
+        description: 'Manage your cash games and the players at each table.',
+        newCashGame: 'New Cash Game',
+        edit: {
+          title: 'Edit Cash Game',
+          save: 'Save Changes',
+          loading: 'Loading cash game for editing...',
+        },
+        table: {
+          name: 'Cash Game Name',
+          blinds: 'Blinds (SB/BB)',
+          buyIn: 'Buy-In (Min/Max)',
+          players: 'Players',
+          action: 'Action',
+          empty: 'No cash games found. Click in "New Cash Game" to start.',
+          button: {
+            start: {
+              title: 'Start Cash Game',
+            },
+            menu: {
+              title: 'Open actions menu',
+            },
+            edit: {
+              title: 'Edit',
+            },
+            delete: {
+              title: 'Delete Cash Game',
+            },
+          },
+          deleteModal: {
+            title: 'Delete cash game',
+            description: 'Are you sure you want to delete the cash game "{{name}}"?',
+            confirm: 'Delete',
+            deleting: 'Deleting...',
+          },
+        },
+        new: {
+          create: 'Create New Cash Game',
+          generalSettingsTitle: 'General Settings',
+          name: 'Cash Game Name',
+          smallBlind: 'Small Blind',
+          bigBlind: 'Big Blind',
+          minBuyIn: 'Minimum Buy-In ($)',
+          maxBuyIn: 'Maximum Buy-In ($)',
+          next: 'Next Step',
+          save: 'Save Cash Game',
+          placeholder: {
+            name: 'Eg.: Friday Table',
+            smallBlind: 'Eg.: 1',
+            bigBlind: 'Eg.: 2',
+            minBuyIn: 'Eg.: $50',
+            maxBuyIn: 'Eg.: $200',
+          },
+          generalSettings: {
+            stepTitle: 'Step 1: General Details & Blinds',
+            title: 'General Settings',
+          },
+          players: {
+            stepTitle: 'Step 2: Players',
+            title: 'Players',
+            placeholder: 'Player name',
+            buyInPlaceholder: 'Buy-In',
+            addPlayer: 'Add Player',
+            remove: 'Remove player',
+            empty: 'No players added. Click "Add Player" to start.',
           },
         },
       },
