@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { SidebarLink } from './SidebarLink';
-import { Trophy, Settings, ChevronRight, ChevronLeft } from 'lucide-react';
+import { ChevronLeft, ChevronRight, CircleDollarSign, Settings, Trophy } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 
@@ -30,6 +30,7 @@ export function Sidebar() {
 
       <nav className="flex flex-col gap-2 flex-1 mt-2">
         <SidebarLink to="/tournaments" icon={Trophy} title={t('sidebar.tournaments')} isCollapsed={isCollapsed} />
+        <SidebarLink to="/cashgames" icon={CircleDollarSign} title={t('sidebar.cashGames')} isCollapsed={isCollapsed} />
       </nav>
 
       <nav className="border-t border-white/10 pt-4">
