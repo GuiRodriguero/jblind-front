@@ -1,5 +1,5 @@
 import type { TournamentFormData } from '../components/TournamentGeneralSettingsStep.tsx';
-import type { PrizeSettings, TournamentLevel, TournamentPlayer } from '../types/tournament.types';
+import { PrizeMode, type PrizeSettings, type TournamentLevel, type TournamentPlayer } from '../types/tournament.types';
 
 interface ApiTournamentLevel {
   readonly id?: string | number;
@@ -24,7 +24,7 @@ interface ApiPrizePayout {
 }
 
 interface ApiPrizeSettings {
-  readonly mode: 'fixed' | 'percentage';
+  readonly mode: PrizeMode;
   readonly payouts: ApiPrizePayout[];
 }
 
@@ -54,7 +54,7 @@ export const EMPTY_TOURNAMENT_FORM_DATA: TournamentFormData = {
 export const EMPTY_TOURNAMENT_PLAYERS: TournamentPlayer[] = [];
 
 export const EMPTY_PRIZE_SETTINGS: PrizeSettings = {
-  mode: 'fixed',
+  mode: PrizeMode.FIXED,
   payouts: [],
 };
 
@@ -87,6 +87,7 @@ export function buildTournamentPayload(
       payouts: prizes.payouts.map((payout) => ({
         position: payout.position,
         value: payout.value,
+        percentage: payout.percentage,
       })),
     },
   };
@@ -126,7 +127,7 @@ export function mapTournamentToFormState(tournament: ApiTournament): {
       name: player.name,
     })),
     prizes: {
-      mode: tournament.prize?.mode ?? 'fixed',
+      mode: tournament.prize?.mode ?? PrizeMode.FIXED,
       payouts: (tournament.prize?.payouts ?? []).map((payout) => ({
         id: crypto.randomUUID(),
         position: payout.position,

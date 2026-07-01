@@ -1,5 +1,3 @@
-/* poker-chip.css */
-
 .poker-chip {
   --chip-bg: #64748b;
   --chip-stripe: #ffffff;
@@ -110,7 +108,7 @@
 
 .poker-chip--yellow {
   --chip-bg: #eab308;
-  --chip-text: #fde047;
+  --chip-text: #ffffff;
 }
 
 .poker-chip--orange {

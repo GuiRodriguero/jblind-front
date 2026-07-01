@@ -27,7 +27,7 @@ export default function PokerChip({ amount, color = 'gray', size = 'md' }: Poker
   const chipColor = amount != null ? (NUMBERED_CHIP_COLORS.find((chip) => amount <= chip.max)?.color ?? 'pink') : color;
 
   const formatAmount = (val: number) => {
-    return val >= 1000 ? `${val / 1000}k` : val;
+    return val >= 10000 ? `${val / 1000}k` : val;
   };
 
   return (

@@ -14,7 +14,12 @@ export interface TournamentPlayer {
   name: string;
 }
 
-export type PrizeMode = 'fixed' | 'percentage';
+export const PrizeMode = {
+  FIXED: 'fixed',
+  PERCENTAGE: 'percentage',
+} as const;
+
+export type PrizeMode = (typeof PrizeMode)[keyof typeof PrizeMode];
 
 export interface PrizePayout {
   id: string;

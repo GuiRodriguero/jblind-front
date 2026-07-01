@@ -1,6 +1,6 @@
 import { Trophy, Plus, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import type { PrizeMode, PrizeSettings } from '../types/tournament.types';
+import { PrizeMode, type PrizeSettings } from '../types/tournament.types';
 
 interface TournamentPrizesProps {
   readonly prizes: PrizeSettings;
@@ -13,7 +13,7 @@ const round = (value: number) => Math.round(value * 100) / 100;
 export function TournamentPrizesStep({ prizes, onPrizesChange, prizePool }: TournamentPrizesProps) {
   const { t } = useTranslation();
 
-  const isPercentage = prizes.mode === 'percentage';
+  const isPercentage = prizes.mode === PrizeMode.PERCENTAGE;
 
   const setMode = (mode: PrizeMode) => {
     if (mode === prizes.mode) {
@@ -21,7 +21,7 @@ export function TournamentPrizesStep({ prizes, onPrizesChange, prizePool }: Tour
     }
 
     const payouts = prizes.payouts.map((payout) => {
-      if (mode === 'fixed') {
+      if (mode === PrizeMode.FIXED) {
         return { ...payout, value: round((payout.percentage / 100) * prizePool) };
       }
       return { ...payout, percentage: prizePool > 0 ? round((payout.value / prizePool) * 100) : 0 };
@@ -88,7 +88,7 @@ export function TournamentPrizesStep({ prizes, onPrizesChange, prizePool }: Tour
         <label className="text-sm font-medium text-gray-400 ml-1">{t('tournament.new.prizes.mode')}</label>
         <div className="flex gap-2">
           <button
-            onClick={() => setMode('fixed')}
+            onClick={() => setMode(PrizeMode.FIXED)}
             className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${
               !isPercentage ? 'bg-blue-600 text-white' : 'bg-surface-light text-gray-400 hover:text-white'
             }`}
@@ -96,7 +96,7 @@ export function TournamentPrizesStep({ prizes, onPrizesChange, prizePool }: Tour
             {t('tournament.new.prizes.fixed')}
           </button>
           <button
-            onClick={() => setMode('percentage')}
+            onClick={() => setMode(PrizeMode.PERCENTAGE)}
             className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${
               isPercentage ? 'bg-blue-600 text-white' : 'bg-surface-light text-gray-400 hover:text-white'
             }`}
