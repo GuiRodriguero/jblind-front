@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { Modal } from '../../../components/ui/Modal';
 
 interface DeleteCashGameModalProps {
   readonly cashGameName: string;
@@ -16,33 +17,31 @@ export function DeleteCashGameModal({
   const { t } = useTranslation();
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-      <div className="w-full max-w-md rounded-xl border border-white/10 bg-surface p-6 shadow-2xl">
-        <h3 className="text-lg font-semibold text-white">{t('cashgame.table.deleteModal.title')}</h3>
-        <p className="mt-2 text-sm text-gray-300">
-          {t('cashgame.table.deleteModal.description', { name: cashGameName })}
-        </p>
-        <div className="mt-6 flex justify-end gap-3">
-          <button
-            type="button"
-            onClick={onClose}
-            disabled={isDeleting}
-            className="rounded-lg border border-white/10 px-4 py-2 text-sm font-medium text-gray-300 transition-colors hover:bg-white/5 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {t('default.cancel')}
-          </button>
-          <button
-            type="button"
-            onClick={onConfirm}
-            disabled={isDeleting}
-            className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-500 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {isDeleting
-              ? t('cashgame.table.deleteModal.deleting')
-              : t('cashgame.table.deleteModal.confirm')}
-          </button>
-        </div>
+    <Modal onClose={onClose}>
+      <h3 className="text-lg font-semibold text-white">{t('cashgame.table.deleteModal.title')}</h3>
+      <p className="mt-2 text-sm text-gray-300">
+        {t('cashgame.table.deleteModal.description', { name: cashGameName })}
+      </p>
+      <div className="mt-6 flex justify-end gap-3">
+        <button
+          type="button"
+          onClick={onClose}
+          disabled={isDeleting}
+          className="rounded-lg border border-white/10 px-4 py-2 text-sm font-medium text-gray-300 transition-colors hover:bg-white/5 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {t('default.cancel')}
+        </button>
+        <button
+          type="button"
+          onClick={onConfirm}
+          disabled={isDeleting}
+          className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-500 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {isDeleting
+            ? t('cashgame.table.deleteModal.deleting')
+            : t('cashgame.table.deleteModal.confirm')}
+        </button>
       </div>
-    </div>
+    </Modal>
   );
 }

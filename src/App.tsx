@@ -9,6 +9,7 @@ import { EditTournamentView } from './features/tournament/views/EditTournamentVi
 import { CashGameView } from './features/cashgame/views/CashGameView';
 import { NewCashGameView } from './features/cashgame/views/NewCashGameView';
 import { EditCashGameView } from './features/cashgame/views/EditCashGameView';
+import { CashGameActiveView } from './features/cashgame/views/CashGameActiveView.tsx';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/cashgames" element={<CashGameView />} />
         <Route path="/cashgames/new" element={<NewCashGameView />} />
         <Route path="/cashgames/:cashGameId/edit" element={<EditCashGameView />} />
+        <Route path="/cashgames/timer" element={<CashGameActiveView />} />
       </Routes>
     </MainLayout>
   );
