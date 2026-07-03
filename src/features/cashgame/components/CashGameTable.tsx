@@ -48,7 +48,7 @@ export function CashGameTable() {
       });
 
       if (response.ok) {
-        window.location.assign(`/timer?cashGameId=${id}`);
+        window.location.assign(`/cashgames/timer?cashgameid=${id}`);
       } else {
         console.error('Error trying to start the cash game.');
       }

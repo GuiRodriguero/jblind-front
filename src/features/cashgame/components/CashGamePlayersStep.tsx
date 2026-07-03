@@ -18,12 +18,6 @@ export function CashGamePlayersStep({ players, onPlayersChange }: CashGamePlayer
     onPlayersChange(players.map((player) => (player.id === id ? { ...player, name } : player)));
   };
 
-  const updatePlayerBuyIn = (id: string, buyIn: string) => {
-    onPlayersChange(
-      players.map((player) => (player.id === id ? { ...player, buyIn: Number(buyIn) } : player))
-    );
-  };
-
   const removePlayer = (id: string) => {
     onPlayersChange(players.filter((player) => player.id !== id));
   };
@@ -45,13 +39,6 @@ export function CashGamePlayersStep({ players, onPlayersChange }: CashGamePlayer
               onChange={(e) => updatePlayerName(player.id, e.target.value)}
               placeholder={t('cashgame.new.players.placeholder')}
               className="flex-1 bg-[#0a0a0a] border border-white/10 rounded-lg px-3 py-2 text-white outline-none focus:border-blue-500"
-            />
-            <input
-              type="number"
-              value={player.buyIn || ''}
-              onChange={(e) => updatePlayerBuyIn(player.id, e.target.value)}
-              placeholder={t('cashgame.new.players.buyInPlaceholder')}
-              className="w-32 bg-[#0a0a0a] border border-white/10 rounded-lg px-3 py-2 text-white outline-none focus:border-blue-500"
             />
             <button
               onClick={() => removePlayer(player.id)}
