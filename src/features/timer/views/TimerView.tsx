@@ -75,7 +75,7 @@ export function TimerView() {
         setIsPlaying(false);
         localStorage.removeItem(`jblind_state_${tournamentId}`);
         setTimeout(() => {
-          alert(`🎉 Torneio Finalizado! ${remainingPlayers[0].name} é o Campeão!`);
+          alert(t('timer.finished', { name: remainingPlayers[0].name }));
         }, 300);
         navigate('/tournaments');
       }
@@ -107,7 +107,7 @@ export function TimerView() {
             if (playersCount > 0) {
               const initialPlayers = Array.from({ length: playersCount }).map((_, i) => ({
                 id: i + 1,
-                name: persistedPlayers[i]?.name ?? `Player ${i + 1}`,
+                name: persistedPlayers[i]?.name ?? `${t('timer.player')} ${i + 1}`,
                 seat: i + 1,
                 chips: stackCount,
               }));

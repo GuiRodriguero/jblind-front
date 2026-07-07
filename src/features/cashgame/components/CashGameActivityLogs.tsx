@@ -6,9 +6,9 @@ interface CashGameActivityLogsProps {
 }
 
 const LOG_TYPE_COLORS = {
-  [CashGameLogType.JOIN]: 'text-green-400',
+  [CashGameLogType.BUY_IN]: 'text-green-400',
   [CashGameLogType.REBUY]: 'text-blue-400',
-  [CashGameLogType.ADDON]: 'text-purple-400',
+  [CashGameLogType.ADD_ON]: 'text-purple-400',
   [CashGameLogType.CASHOUT]: 'text-amber-400',
 };
 
