@@ -32,7 +32,7 @@ export function AddPlayerModal({ onClose, onConfirm, minBuyIn, maxBuyIn }: AddPl
   };
 
   return (
-    <Modal onClose={onClose}>
+    <Modal>
       <div className="flex items-center gap-3 mb-6">
         <div className="w-10 h-10 rounded-full bg-green-600/20 flex items-center justify-center text-green-400">
           <UserPlus size={20} />
@@ -51,7 +51,7 @@ export function AddPlayerModal({ onClose, onConfirm, minBuyIn, maxBuyIn }: AddPl
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-green-500 transition-colors"
-            placeholder="Ex: João Silva"
+            placeholder={t('cashgame.active.modals.addPlayer.namePlaceholder')}
             required
           />
         </div>

@@ -15,11 +15,11 @@ export interface CashGameActivePlayer {
 }
 
 export const CashGameLogType = {
-  JOIN: 'join',
-  REBUY: 'rebuy',
-  ADDON: 'addon',
-  CASHOUT: 'cashout',
-  INFO: 'info',
+  BUY_IN: 'BUY_IN',
+  REBUY: 'REBUY',
+  ADD_ON: 'ADD_ON',
+  CASHOUT: 'CASHOUT',
+  INFO: 'INFO',
 } as const;
 
 export type CashGameLogType = (typeof CashGameLogType)[keyof typeof CashGameLogType];
