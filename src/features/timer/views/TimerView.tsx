@@ -1,5 +1,5 @@
 import newRoundSound from '../../../assets/sounds/new-round-sound.mp3';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { TimerBlindsTableCard } from '../components/TimerStructureCard';
 import { TimerPrizePoolCard } from '../components/TimerPrizePoolCard';
@@ -9,6 +9,8 @@ import { TimerStatsFooter } from '../components/TimerStatsFooter';
 import { useTranslation } from 'react-i18next';
 import type { Player } from '../types/player.type';
 import { CoffeeAnimated } from '../components/icon/CoffeeAnimatedIcon';
+import { useWakeLock } from '../../../hooks/useWakeLock';
+import { usePreventUnload } from '../../../hooks/usePreventUnload';
 
 export function TimerView() {
   const { t } = useTranslation();
@@ -21,33 +23,10 @@ export function TimerView() {
   const [activePlayers, setActivePlayers] = useState<Player[]>([]);
   const [currentLevelIndex, setCurrentLevelIndex] = useState(0);
   const [timeLeft, setTimeLeft] = useState(0);
-  const wakeLockRef = useRef<WakeLockSentinel | null>(null);
   const navigate = useNavigate();
 
-  const releaseWakeLock = async () => {
-    if (!wakeLockRef.current) return;
-
-    try {
-      await wakeLockRef.current.release();
-    } catch (error) {
-      console.error('Error releasing wake lock:', error);
-    } finally {
-      wakeLockRef.current = null;
-    }
-  };
-
-  const requestWakeLock = async () => {
-    if (!('wakeLock' in navigator) || wakeLockRef.current) return;
-
-    try {
-      wakeLockRef.current = await navigator.wakeLock.request('screen');
-      wakeLockRef.current.addEventListener('release', () => {
-        wakeLockRef.current = null;
-      });
-    } catch (error) {
-      console.error('Error requesting wake lock:', error);
-    }
-  };
+  useWakeLock(isPlaying);
+  usePreventUnload(isPlaying || activePlayers.length > 0);
 
   const handleNextRound = () => {
     if (tournament && currentLevelIndex < tournament.levels.length - 1) {
@@ -149,27 +128,6 @@ export function TimerView() {
     return () => clearTimeout(timeoutId);
   }, [isPlaying, timeLeft, currentLevelIndex, tournament]);
 
-  useEffect(() => {
-    if (isPlaying) {
-      requestWakeLock();
-    } else {
-      releaseWakeLock();
-    }
-  }, [isPlaying]);
-
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (document.visibilityState !== 'visible' || !isPlaying) return;
-      requestWakeLock();
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      releaseWakeLock();
-    };
-  }, [isPlaying]);
 
   useEffect(() => {
     if (loading || !tournament) return;
