@@ -1,13 +1,30 @@
-import { User, UserMinus } from 'lucide-react';
+import { Coins, RotateCcw, User, UserMinus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { Player } from '../types/player.type';
 
 interface TimerPlayersCardProps {
   readonly players: Player[];
-  readonly onEliminate: (playerId: number) => void;
+  readonly onEliminate: (playerId: string) => void;
+  readonly allowRebuys?: boolean;
+  readonly allowAddOn?: boolean;
+  readonly onRebuy?: (playerId: string) => void;
+  readonly onAddOn?: (playerId: string) => void;
 }
 
-export function TimerPlayersCard({ players, onEliminate }: TimerPlayersCardProps) {
+function getDisplayName(player: Player) {
+  const rebuySuffix = player.rebuys > 0 ? ` [${player.rebuys}]` : '';
+  const addonSuffix = '+'.repeat(player.addons);
+  return `${player.name}${rebuySuffix}${addonSuffix}`;
+}
+
+export function TimerPlayersCard({
+  players,
+  onEliminate,
+  allowRebuys,
+  allowAddOn,
+  onRebuy,
+  onAddOn,
+}: TimerPlayersCardProps) {
   const { t } = useTranslation();
   return (
     <div className="col-span-3 bg-white/5 rounded-2xl border border-white/10 p-4 flex flex-col min-h-0 overflow-hidden">
@@ -29,7 +46,7 @@ export function TimerPlayersCard({ players, onEliminate }: TimerPlayersCardProps
                 <User size={14} className="text-gray-400" />
               </div>
               <div>
-                <p className="text-sm font-bold text-gray-200">{player.name}</p>
+                <p className="text-sm font-bold text-gray-200">{getDisplayName(player)}</p>
                 <p className="text-[10px] text-gray-500 uppercase">
                   {t('timer.seat')} {player.seat}
                 </p>
@@ -41,6 +58,24 @@ export function TimerPlayersCard({ players, onEliminate }: TimerPlayersCardProps
                 <p className="text-sm font-mono text-white">{player.chips.toLocaleString()}</p>
                 <p className="text-[10px] text-green-400">{t('timer.chips')}</p>
               </div>
+              {allowRebuys && (
+                <button
+                  onClick={() => onRebuy?.(player.id)}
+                  className="p-2 text-gray-600 hover:text-blue-400 hover:bg-blue-500/10 rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                  title={t('timer.rebuy')}
+                >
+                  <RotateCcw size={16} />
+                </button>
+              )}
+              {allowAddOn && (
+                <button
+                  onClick={() => onAddOn?.(player.id)}
+                  className="p-2 text-gray-600 hover:text-yellow-400 hover:bg-yellow-500/10 rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-yellow-500/50"
+                  title={t('timer.addon')}
+                >
+                  <Coins size={16} />
+                </button>
+              )}
               <button
                 onClick={() => onEliminate(player.id)}
                 className="p-2 text-gray-600 hover:text-red-500 hover:bg-red-500/10 rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-red-500/50"
