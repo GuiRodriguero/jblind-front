@@ -14,6 +14,16 @@ export interface TournamentPlayer {
   name: string;
 }
 
+export const TournamentLogType = {
+  BUY_IN: 'BUY_IN',
+  REBUY: 'REBUY',
+  ADD_ON: 'ADD_ON',
+  ELIMINATION: 'ELIMINATION',
+  LEFT: 'LEFT',
+} as const;
+
+export type TournamentLogType = (typeof TournamentLogType)[keyof typeof TournamentLogType];
+
 export const PrizeMode = {
   FIXED: 'fixed',
   PERCENTAGE: 'percentage',
