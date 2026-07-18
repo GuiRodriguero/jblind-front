@@ -1,6 +1,8 @@
 export interface Player {
-  id: number;
+  id: string;
   name: string;
   seat: number;
   chips: number;
+  rebuys: number;
+  addons: number;
 }

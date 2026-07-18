@@ -9,6 +9,8 @@ import { TimerStatsFooter } from '../components/TimerStatsFooter';
 import { useTranslation } from 'react-i18next';
 import type { Player } from '../types/player.type';
 import { CoffeeAnimated } from '../components/icon/CoffeeAnimatedIcon';
+import { tournamentApi } from '../../tournament/services/tournamentApi';
+import { TournamentLogType } from '../../tournament/types/tournament.types';
 import { useWakeLock } from '../../../hooks/useWakeLock';
 import { usePreventUnload } from '../../../hooks/usePreventUnload';
 
@@ -46,13 +48,57 @@ export function TimerView() {
     }
   };
 
-  const handleEliminatePlayer = (playerId: number) => {
+  const handleRebuy = async (playerId: string) => {
+    if (!tournamentId) return;
+    const player = activePlayers.find((p) => p.id === playerId);
+    if (!player) return;
+    try {
+      await tournamentApi.persistLog(
+        tournamentId,
+        player.id,
+        TournamentLogType.REBUY,
+        Number(tournament.buyIn) || 0,
+        t('timer.logs.rebuy', { name: player.name })
+      );
+      setActivePlayers((prev) =>
+        prev.map((p) => (p.id === playerId ? { ...p, rebuys: p.rebuys + 1 } : p))
+      );
+    } catch (error) {
+      console.error('Error registering rebuy:', error);
+      alert(t('timer.errors.rebuy'));
+    }
+  };
+
+  const handleAddOn = async (playerId: string) => {
+    if (!tournamentId) return;
+    const player = activePlayers.find((p) => p.id === playerId);
+    if (!player) return;
+    try {
+      await tournamentApi.persistLog(
+        tournamentId,
+        player.id,
+        TournamentLogType.ADD_ON,
+        Number(tournament.buyIn) || 0,
+        t('timer.logs.addon', { name: player.name })
+      );
+      const stackCount = Number(tournament.startingStack) || 0;
+      setActivePlayers((prev) =>
+        prev.map((p) =>
+          p.id === playerId ? { ...p, addons: p.addons + 1, chips: p.chips + stackCount } : p
+        )
+      );
+    } catch (error) {
+      console.error('Error registering add-on:', error);
+      alert(t('timer.errors.addon'));
+    }
+  };
+
+  const handleEliminatePlayer = (playerId: string) => {
     setActivePlayers((prev) => {
       const remainingPlayers = prev.filter((p) => p.id !== playerId);
 
       if (remainingPlayers.length === 1) {
         setIsPlaying(false);
-        localStorage.removeItem(`jblind_state_${tournamentId}`);
         setTimeout(() => {
           alert(t('timer.finished', { name: remainingPlayers[0].name }));
         }, 300);
@@ -72,26 +118,32 @@ export function TimerView() {
           const data = await response.json();
           setTournament(data);
 
-          const savedState = localStorage.getItem(`jblind_state_${tournamentId}`);
+          const stackCount = Number(data.startingStack) || 0;
+          const backendPlayers = Array.isArray(data.players) ? data.players : [];
 
-          if (savedState) {
-            const parsed = JSON.parse(savedState);
-            setTimeLeft(parsed.timeLeft);
-            setCurrentLevelIndex(parsed.currentLevelIndex);
-            setActivePlayers(parsed.activePlayers);
-          } else {
-            const stackCount = Number(data.startingStack) || 0;
-            const persistedPlayers = Array.isArray(data.players) ? data.players : [];
-            const playersCount = persistedPlayers.length || Number(data.expectedPlayers) || 0;
-            if (playersCount > 0) {
-              const initialPlayers = Array.from({ length: playersCount }).map((_, i) => ({
-                id: i + 1,
-                name: persistedPlayers[i]?.name ?? `${t('timer.player')} ${i + 1}`,
+          if (backendPlayers.length > 0) {
+            const initialPlayers: Player[] = backendPlayers.map(
+              (p: { id: string; name: string }, i: number) => ({
+                id: p.id,
+                name: p.name,
                 seat: i + 1,
                 chips: stackCount,
-              }));
-              setActivePlayers(initialPlayers);
-            }
+                rebuys: 0,
+                addons: 0,
+              })
+            );
+            setActivePlayers(initialPlayers);
+          } else {
+            const playersCount = Number(data.expectedPlayers) || 0;
+            const initialPlayers: Player[] = Array.from({ length: playersCount }).map((_, i) => ({
+              id: String(i + 1),
+              name: `${t('timer.player')} ${i + 1}`,
+              seat: i + 1,
+              chips: stackCount,
+              rebuys: 0,
+              addons: 0,
+            }));
+            setActivePlayers(initialPlayers);
           }
 
           setTimeLeft(data.levels[0].durationInMinutes * 60);
@@ -127,19 +179,6 @@ export function TimerView() {
 
     return () => clearTimeout(timeoutId);
   }, [isPlaying, timeLeft, currentLevelIndex, tournament]);
-
-
-  useEffect(() => {
-    if (loading || !tournament) return;
-
-    const stateToSave = {
-      timeLeft,
-      currentLevelIndex,
-      activePlayers,
-    };
-
-    localStorage.setItem(`jblind_state_${tournamentId}`, JSON.stringify(stateToSave));
-  }, [timeLeft, currentLevelIndex, activePlayers, tournamentId, loading, tournament]);
 
   if (loading) return <div className="p-8 text-white">{t('timer.loading')}</div>;
   if (!tournament) return <div className="p-8 text-white">{t('timer.notFound')}</div>;
@@ -213,7 +252,14 @@ export function TimerView() {
           onPrevRound={handlePrevRound}
         />
 
-        <TimerPlayersCard players={activePlayers} onEliminate={handleEliminatePlayer} />
+        <TimerPlayersCard
+          players={activePlayers}
+          onEliminate={handleEliminatePlayer}
+          allowRebuys={tournament.allowRebuys}
+          allowAddOn={tournament.allowAddOn}
+          onRebuy={handleRebuy}
+          onAddOn={handleAddOn}
+        />
       </div>
       <TimerStatsFooter
         entrants={tournament.expectedPlayers}

@@ -279,6 +279,16 @@ export const resources = {
         freeTournament: 'Torneio Grátis',
         prizePool: 'Premiação',
         structure: 'Estrutura',
+        rebuy: 'Rebuy',
+        addon: 'Add-On',
+        logs: {
+          rebuy: 'Rebuy de {{name}}',
+          addon: 'Add-On de {{name}}',
+        },
+        errors: {
+          rebuy: 'Não foi possível registrar o rebuy. Tente novamente.',
+          addon: 'Não foi possível registrar o add-on. Tente novamente.',
+        },
         finished: '🎉 Torneio Finalizado! {{name}} é o Campeão!',
       },
     },
@@ -560,6 +570,16 @@ export const resources = {
         freeTournament: 'Free tournament',
         prizePool: 'Prize Pool',
         structure: 'Structure',
+        rebuy: 'Rebuy',
+        addon: 'Add-On',
+        logs: {
+          rebuy: 'Rebuy by {{name}}',
+          addon: 'Add-On by {{name}}',
+        },
+        errors: {
+          rebuy: 'Could not register the rebuy. Please try again.',
+          addon: 'Could not register the add-on. Please try again.',
+        },
         entrants: 'Entrants',
         remaining: 'Remaining',
         chipsInPlay: 'Chips in Play',
