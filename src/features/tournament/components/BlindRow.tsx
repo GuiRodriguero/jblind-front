@@ -46,8 +46,8 @@ export default function BlindRow({ level, onUpdate, onRemove }: BlindRowProps) {
           <Clock size={12} className="text-gray-500" />
           <input
             type="number"
-            value={level.duration}
-            onChange={(e) => onUpdate(level.id, 'duration', Number(e.target.value))}
+            value={level.durationInMinutes}
+            onChange={(e) => onUpdate(level.id, 'durationInMinutes', Number(e.target.value))}
             className="w-8 bg-transparent text-xs text-center font-bold outline-none"
           />
           <span className="text-[10px] text-gray-600">m</span>
