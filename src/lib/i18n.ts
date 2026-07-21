@@ -284,6 +284,7 @@ export const resources = {
         logs: {
           rebuy: 'Rebuy de {{name}}',
           addon: 'Add-On de {{name}}',
+          elimination: '{{name}} foi eliminado',
         },
         errors: {
           rebuy: 'Não foi possível registrar o rebuy. Tente novamente.',
@@ -575,6 +576,7 @@ export const resources = {
         logs: {
           rebuy: 'Rebuy by {{name}}',
           addon: 'Add-On by {{name}}',
+          elimination: '{{name}} was eliminated',
         },
         errors: {
           rebuy: 'Could not register the rebuy. Please try again.',

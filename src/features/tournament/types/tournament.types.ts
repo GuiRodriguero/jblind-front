@@ -4,7 +4,7 @@ export interface TournamentLevel {
   smallBlind: number;
   bigBlind: number;
   ante: number;
-  duration: number; // minutes
+  durationInMinutes: number;
   isBreak: boolean;
   shouldColorUp?: boolean;
 }
@@ -23,6 +23,16 @@ export const TournamentLogType = {
 } as const;
 
 export type TournamentLogType = (typeof TournamentLogType)[keyof typeof TournamentLogType];
+
+export interface TournamentLog {
+  id: string;
+  tournamentId: string;
+  playerId?: string;
+  type: TournamentLogType;
+  amount?: number;
+  message: string;
+  timestamp: string;
+}
 
 export const PrizeMode = {
   FIXED: 'fixed',

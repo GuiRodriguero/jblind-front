@@ -25,7 +25,7 @@ export function TournamentLevelStructureManagerStep({ levels, onLevelsChange }: 
       smallBlind: nextBigBlind / 2,
       bigBlind: nextBigBlind,
       ante: 0,
-      duration: lastLevel?.duration || 15,
+      durationInMinutes: lastLevel?.durationInMinutes || 15,
       isBreak: false,
       shouldColorUp: false,
     };
@@ -40,7 +40,7 @@ export function TournamentLevelStructureManagerStep({ levels, onLevelsChange }: 
       smallBlind: 0,
       bigBlind: 0,
       ante: 0,
-      duration: 10,
+      durationInMinutes: 10,
       isBreak: true,
     };
     onLevelsChange([...levels, newLevel]);
