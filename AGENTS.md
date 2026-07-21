@@ -7,6 +7,7 @@
 > ⚠️ **Keep this document up to date.** This file is the source of truth for the project's conventions. Whenever you add a new feature, change the architecture, or invalidate any statement made here, you **must** update the affected sections of `AGENTS.md` in the same change. Outdated documentation is treated as a bug.
 
 > This is the **frontend** of the `jblind` poker tracker. The backend (Java + Spring Boot) lives in the sibling project `jblind` and has its own `AGENTS.md` describing the REST contract this SPA consumes.
+> **Note:** Before implementing significant changes, it is recommended to verify the current state of the backend code (`jblind` project) to ensure alignment with the latest API contracts and business logic.
 
 ---
 
@@ -56,8 +57,8 @@ A **tournament**: a fixed structure of blind levels that increase over time, wit
 
 - A tournament has `buyIn`, `startingStack`, `expectedPlayers`, `allowRebuys` / `allowAddOn` flags, an ordered list of `levels` (blinds/breaks), a list of `players`, and a `prize` (mode + payouts).
 - Creation/editing is a **multi-step wizard** (`TournamentGeneralSettingsStep` → `TournamentLevelStructureManagerStep` → `TournamentPlayersStep` → `TournamentPrizesStep`).
-- The **live clock** lives in the `timer` feature (`TimerView`): it counts down levels, shows blinds/prize pool/stats, and offers per-player **Eliminate / Rebuy / Add-On** actions that post logs.
-- ⚠️ The tournament backend exposes only `players[].id` / `players[].name` (no per-player stats, no `GET` for logs). Therefore the timer's live counts/chips/clock are **front-only** and are **not** persisted (a refresh resets them). Do not reintroduce `localStorage` for this without an explicit request.
+- The **live clock** lives in the `timer` feature (`TimerView` + `useTournamentSession`): it counts down levels, shows blinds/prize pool/stats, and offers per-player **Eliminate / Rebuy / Add-On** actions that post logs.
+- The active session (players, chips, rebuys) is **rebuilt from logs** on load via `tournamentApi.getDetails` (which returns the full tournament object including its logs), so it survives a refresh. The live clock state remains front-only.
 
 ### 2.3 Log types (shared contract with the backend)
 
@@ -173,8 +174,8 @@ export const tournamentApi = {
 ## 6. State & Data Flow
 
 - **Local state** with `useState`; side effects (data loading, timers) with `useEffect`; memoized loaders with `useCallback`.
-- **Session logic goes into a hook**, not the view. `useCashGameSession` is the reference: it loads details, maps backend players/logs into view models, exposes `handleRebuy` / `handleAddOn` / `handleCashOut` / ... and a `refreshSession`.
-- **Rebuild state from the backend** on load whenever the backend exposes it (cash game). Only keep state purely in the front when the backend does not expose it (tournament timer counts/clock) — and prefer keeping it simple over persisting it.
+- **Session logic goes into a hook**, not the view. `useCashGameSession` and `useTournamentSession` are the references: they load details, map backend players/logs into view models, and expose action handlers.
+- **Rebuild state from the backend** on load whenever possible (both cash game and tournament). Logs are replayed to reconstruct the current session state.
 - The `react-hooks` ESLint plugin is enabled; respect the rules of hooks and effect dependency arrays (there are two pre-existing `exhaustive-deps` warnings in `TimerView.tsx` — do not add more).
 
 ---
