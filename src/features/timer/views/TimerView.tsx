@@ -110,7 +110,7 @@ export function TimerView() {
         <TimerClockBoard
           isPlaying={isPlaying}
           timeLeft={timeLeft}
-          roundName={currentLevel.isBreak ? `${t('timer.break')}` : `ROUND ${currentLevel.round}`}
+          roundName={currentLevel.isBreak ? `${t('timer.break')}` : `ROUND ${currentLevel.roundNumber}`}
           isBreak={currentLevel.isBreak}
           shouldColorUp={currentLevel.shouldColorUp}
           currentBlinds={currentBlindsInfo()}

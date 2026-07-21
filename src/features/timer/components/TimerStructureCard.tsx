@@ -1,6 +1,7 @@
+import type { TournamentLevel } from '../../tournament/types/tournament.types';
 import { useTranslation } from 'react-i18next';
 
-export function TimerBlindsTableCard({ levels, currentIndex }: { levels: any[]; currentIndex: number }) {
+export function TimerBlindsTableCard({ levels, currentIndex }: { levels: TournamentLevel[]; currentIndex: number }) {
   const { t } = useTranslation();
 
   return (
@@ -18,7 +19,7 @@ export function TimerBlindsTableCard({ levels, currentIndex }: { levels: any[]; 
             </tr>
           </thead>
           <tbody>
-            {levels.map((level: any, index: number) => (
+            {levels.map((level, index) => (
               <tr key={index} className={index === currentIndex ? 'bg-blue-600/20 text-blue-400 font-bold' : ''}>
                 <td className="py-3">{level.isBreak ? 'BREAK' : level.roundNumber}</td>
                 <td>{level.isBreak ? '-' : `${level.smallBlind}/${level.bigBlind}`}</td>

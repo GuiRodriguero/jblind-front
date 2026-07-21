@@ -1,6 +1,6 @@
 export interface TournamentLevel {
   id: string;
-  round: number;
+  roundNumber: number;
   smallBlind: number;
   bigBlind: number;
   ante: number;

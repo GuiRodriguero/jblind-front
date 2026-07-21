@@ -11,7 +11,7 @@ export default function BlindRow({ level, onUpdate, onRemove }: BlindRowProps) {
   return (
     <tr className="border-b border-white/5 transition-colors hover:bg-white/2">
       <td className="p-2 text-center">
-        <span className="text-sm font-mono text-gray-400">{level.round}</span>
+        <span className="text-sm font-mono text-gray-400">{level.roundNumber}</span>
       </td>
 
       <td className="p-2">
