@@ -12,6 +12,8 @@ import { useWakeLock } from '../../../hooks/useWakeLock';
 import { usePreventUnload } from '../../../hooks/usePreventUnload';
 import { useTournamentSession } from '../hooks/useTournamentSession';
 
+import { tournamentApi } from '../../tournament/services/tournamentApi';
+
 export function TimerView() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -30,6 +32,7 @@ export function TimerView() {
     handleRebuy,
     handleAddOn,
     handleEliminatePlayer,
+    handleChampion,
     setOnRoundEnd,
     isLoading,
   } = useTournamentSession(tournamentId);
@@ -44,9 +47,13 @@ export function TimerView() {
   }, [setOnRoundEnd]);
 
   useEffect(() => {
-    if (activePlayers.length === 1 && tournament) {
+    if (activePlayers.length === 1 && tournament && tournament.status !== 'FINISHED') {
       setIsPlaying(false);
       const winnerName = activePlayers[0].name;
+
+      handleChampion(activePlayers[0].id);
+      tournamentApi.finish(tournament.id).catch((e) => console.error('Error auto-finishing tournament', e));
+
       setTimeout(() => {
         alert(t('timer.finished', { name: winnerName }));
         navigate('/tournaments');

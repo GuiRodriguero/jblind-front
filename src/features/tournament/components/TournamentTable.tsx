@@ -39,8 +39,13 @@ export function TournamentTable() {
     fetchTournaments();
   }, []);
 
-  const handlePlayClick = async (e: React.MouseEvent, id: number) => {
+  const handlePlayClick = async (e: React.MouseEvent, id: number, status: string) => {
     e.stopPropagation();
+
+    if (status === 'FINISHED') {
+      window.location.assign(`/tournaments/summary?tournamentId=${id}`);
+      return;
+    }
 
     try {
       const response = await fetch(`http://localhost:8080/v1/tournaments/${id}/play`, {
@@ -99,7 +104,7 @@ export function TournamentTable() {
                 return (
                   <tr
                     key={tItem.id}
-                    onClick={(e) => handlePlayClick(e, tItem.id)}
+                    onClick={(e) => handlePlayClick(e, tItem.id, tItem.status)}
                     className="border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer group"
                   >
                     <td className="p-4 font-semibold text-white">
@@ -126,7 +131,7 @@ export function TournamentTable() {
                     </td>
                     <td className="p-4">
                       <TournamentActionsMenu
-                        tournament={{ id: tItem.id, name: tItem.name }}
+                        tournament={{ id: tItem.id, name: tItem.name, status: tItem.status }}
                         onPlay={handlePlayClick}
                         onDeleted={handleTournamentDeleted}
                       />

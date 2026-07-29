@@ -73,7 +73,7 @@ export function buildTournamentPayload(
     allowRebuys: formData.allowRebuys ?? false,
     allowAddOn: formData.allowAddOn ?? false,
     levels: levels.map((level) => ({
-      roundNumber: level.round,
+      roundNumber: level.roundNumber,
       smallBlind: level.smallBlind,
       bigBlind: level.bigBlind,
       ante: level.ante,
@@ -114,7 +114,7 @@ export function mapTournamentToFormState(tournament: ApiTournament): {
     },
     levels: tournament.levels.map((level) => ({
       id: String(level.id ?? crypto.randomUUID()),
-      round: level.roundNumber,
+      roundNumber: level.roundNumber,
       smallBlind: level.smallBlind,
       bigBlind: level.bigBlind,
       ante: level.ante,

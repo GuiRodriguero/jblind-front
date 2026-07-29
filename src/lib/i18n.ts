@@ -39,6 +39,9 @@ export const resources = {
             start: {
               title: 'Iniciar Torneio',
             },
+            summary: {
+              title: 'Ver Resumo',
+            },
             menu: {
               title: 'Abrir menu de ações',
             },
@@ -113,6 +116,21 @@ export const resources = {
             pool: 'Premiação Total',
             remaining: 'Restante',
           },
+        },
+        summary: {
+          title: 'Resumo do Torneio',
+          loading: 'Carregando resumo...',
+          notFound: 'Torneio não encontrado',
+          back: 'Voltar',
+          standings: 'Posições Finais',
+          logsTitle: 'Histórico de Atividades',
+          logsEmpty: 'Nenhuma atividade registrada.',
+          rebuys: 'Rebuys',
+          addons: 'Add-Ons',
+          champion: 'Campeão',
+          eliminated: 'Eliminado',
+          stillIn: 'Em jogo',
+          prize: 'Prêmio',
         },
       },
       cashgame: {
@@ -212,6 +230,9 @@ export const resources = {
             start: {
               title: 'Iniciar Cash Game',
             },
+            summary: {
+              title: 'Ver Resumo',
+            },
             menu: {
               title: 'Abrir menu de ações',
             },
@@ -262,6 +283,18 @@ export const resources = {
             empty: 'Nenhum jogador adicionado. Clique em "Adicionar Jogador" para começar.',
           },
         },
+        summary: {
+          title: 'Resumo do Cash Game',
+          loading: 'Carregando resumo...',
+          notFound: 'Cash game não encontrado',
+          back: 'Voltar',
+          standings: 'Resultado dos Jogadores',
+          logsTitle: 'Histórico de Atividades',
+          logsEmpty: 'Nenhuma atividade registrada.',
+          invested: 'Investido',
+          cashedOut: 'Retirado',
+          profit: 'Lucro',
+        },
       },
       timer: {
         loading: 'Carregando torneio...',
@@ -284,11 +317,14 @@ export const resources = {
         logs: {
           rebuy: 'Rebuy de {{name}}',
           addon: 'Add-On de {{name}}',
-          elimination: '{{name}} foi eliminado',
+          elimination: '{{name}} eliminou {{eliminatedPlayerName}}',
+          left: '{{name}} deixou o torneio em {{position}}',
+          champion: 'Parabéns! {{name}} é o campeão',
         },
         errors: {
           rebuy: 'Não foi possível registrar o rebuy. Tente novamente.',
           addon: 'Não foi possível registrar o add-on. Tente novamente.',
+          eliminate: 'Não foi possível registrar a eliminação. Tente novamente.',
         },
         finished: '🎉 Torneio Finalizado! {{name}} é o Campeão!',
       },
@@ -330,6 +366,9 @@ export const resources = {
           button: {
             start: {
               title: 'Start Tournament',
+            },
+            summary: {
+              title: 'View Summary',
             },
             menu: {
               title: 'Open actions menu',
@@ -405,6 +444,21 @@ export const resources = {
             pool: 'Prize Pool',
             remaining: 'Remaining',
           },
+        },
+        summary: {
+          title: 'Tournament Summary',
+          loading: 'Loading summary...',
+          notFound: 'Tournament not found',
+          back: 'Back',
+          standings: 'Final Standings',
+          logsTitle: 'Activity Log',
+          logsEmpty: 'No activity recorded.',
+          rebuys: 'Rebuys',
+          addons: 'Add-Ons',
+          champion: 'Champion',
+          eliminated: 'Eliminated',
+          stillIn: 'Still in',
+          prize: 'Prize',
         },
       },
       cashgame: {
@@ -504,6 +558,9 @@ export const resources = {
             start: {
               title: 'Start Cash Game',
             },
+            summary: {
+              title: 'View Summary',
+            },
             menu: {
               title: 'Open actions menu',
             },
@@ -554,6 +611,18 @@ export const resources = {
             empty: 'No players added. Click "Add Player" to start.',
           },
         },
+        summary: {
+          title: 'Cash Game Summary',
+          loading: 'Loading summary...',
+          notFound: 'Cash game not found',
+          back: 'Back',
+          standings: 'Player Results',
+          logsTitle: 'Activity Log',
+          logsEmpty: 'No activity recorded.',
+          invested: 'Invested',
+          cashedOut: 'Cashed Out',
+          profit: 'Profit',
+        },
       },
       timer: {
         loading: 'Loading tournament...',
@@ -576,11 +645,14 @@ export const resources = {
         logs: {
           rebuy: 'Rebuy by {{name}}',
           addon: 'Add-On by {{name}}',
-          elimination: '{{name}} was eliminated',
+          elimination: '{{name}} eliminated {{eliminatedPlayerName}}',
+          left: '{{name}} left the tournament in {{position}}',
+          champion: 'Congratulations! {{name}} is the champion!',
         },
         errors: {
           rebuy: 'Could not register the rebuy. Please try again.',
           addon: 'Could not register the add-on. Please try again.',
+          eliminate: 'Could not register the elimination. Please try again.',
         },
         entrants: 'Entrants',
         remaining: 'Remaining',

@@ -10,6 +10,7 @@ interface CashGameDetails {
   bigBlind: number;
   minBuyIn: number;
   maxBuyIn: number;
+  status: string;
   players?: Array<{
     id: string;
     name: string;

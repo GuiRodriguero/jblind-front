@@ -1,4 +1,4 @@
-import { MoreVertical, Pencil, Play, Trash2 } from 'lucide-react';
+import { FileText, MoreVertical, Pencil, Play, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DeleteTournamentModal } from './DeleteTournamentModal';
@@ -6,11 +6,12 @@ import { DeleteTournamentModal } from './DeleteTournamentModal';
 interface TournamentSummary {
   readonly id: number;
   readonly name: string;
+  readonly status: string;
 }
 
 interface TournamentActionsMenuProps {
   readonly tournament: TournamentSummary;
-  readonly onPlay: (e: React.MouseEvent, id: number) => void;
+  readonly onPlay: (e: React.MouseEvent, id: number, status: string) => void;
   readonly onDeleted: (tournamentId: number) => void;
 }
 
@@ -91,13 +92,23 @@ export function TournamentActionsMenu({
   return (
     <>
       <div className="flex items-center justify-center gap-3">
-        <button
-          onClick={(e) => onPlay(e, tournament.id)}
-          className="p-2 bg-blue-600/20 text-blue-400 hover:bg-blue-600 hover:text-white rounded-full transition-all group-hover:scale-110"
-          title={t('tournament.table.button.start.title')}
-        >
-          <Play size={16} fill="currentColor" />
-        </button>
+        {tournament.status === 'FINISHED' ? (
+          <button
+            onClick={(e) => onPlay(e, tournament.id, tournament.status)}
+            className="p-2 bg-amber-600/20 text-amber-400 hover:bg-amber-600 hover:text-white rounded-full transition-all group-hover:scale-110"
+            title={t('tournament.table.button.summary.title')}
+          >
+            <FileText size={16} />
+          </button>
+        ) : (
+          <button
+            onClick={(e) => onPlay(e, tournament.id, tournament.status)}
+            className="p-2 bg-blue-600/20 text-blue-400 hover:bg-blue-600 hover:text-white rounded-full transition-all group-hover:scale-110"
+            title={t('tournament.table.button.start.title')}
+          >
+            <Play size={16} fill="currentColor" />
+          </button>
+        )}
         <button
           onClick={handleDropdownToggle}
           className="p-2 bg-white/10 text-gray-300 hover:bg-white/20 hover:text-white rounded-full transition-all z-20"
