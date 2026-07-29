@@ -1,16 +1,19 @@
 import { CircleDollarSign, DollarSign, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { cashGameApi } from '../services/cashGameApi';
+import { api } from '../../../lib/axios';
 import { CashGameActionsMenu } from './CashGameActionsMenu';
 
 interface CashGameSummary {
-  readonly id: number;
+  readonly id: string;
   readonly name: string;
   readonly smallBlind: number;
   readonly bigBlind: number;
   readonly minBuyIn: number;
   readonly maxBuyIn: number;
   readonly players: number;
+  readonly status: string;
 }
 
 export function CashGameTable() {
@@ -22,15 +25,10 @@ export function CashGameTable() {
   useEffect(() => {
     async function fetchCashGames() {
       try {
-        const response = await fetch('http://localhost:8080/v1/cashgames');
-        if (response.ok) {
-          const data = await response.json();
-          setCashGames(data);
-        } else {
-          console.error('Error trying to search cash games.');
-        }
+        const { data } = await api.get('/v1/cashgames');
+        setCashGames(data);
       } catch (error) {
-        console.error('Error connecting with server.', error);
+        console.error('Error trying to search cash games.', error);
       } finally {
         setLoading(false);
       }
@@ -39,25 +37,23 @@ export function CashGameTable() {
     fetchCashGames();
   }, []);
 
-  const handlePlayClick = async (e: React.MouseEvent, id: number) => {
+  const handlePlayClick = async (e: React.MouseEvent, id: string, status: string) => {
     e.stopPropagation();
 
-    try {
-      const response = await fetch(`http://localhost:8080/v1/cashgames/${id}/play`, {
-        method: 'POST'
-      });
+    if (status === 'FINISHED') {
+      window.location.assign(`/cashgames/summary?cashgameid=${id}`);
+      return;
+    }
 
-      if (response.ok) {
-        window.location.assign(`/cashgames/timer?cashgameid=${id}`);
-      } else {
-        console.error('Error trying to start the cash game.');
-      }
+    try {
+      await cashGameApi.play(id);
+      window.location.assign(`/cashgames/timer?cashgameid=${id}`);
     } catch (error) {
-      console.error('Error trying to communicate with server.', error);
+      console.error('Error trying to start the cash game.', error);
     }
   };
 
-  const handleCashGameDeleted = (cashGameId: number) => {
+  const handleCashGameDeleted = (cashGameId: string) => {
     setCashGames((currentCashGames) =>
       currentCashGames.filter((cashGame) => cashGame.id !== cashGameId)
     );
@@ -96,10 +92,13 @@ export function CashGameTable() {
               cashGames.map((cgItem) => (
                 <tr
                   key={cgItem.id}
-                  onClick={(e) => handlePlayClick(e, cgItem.id)}
+                  onClick={(e) => handlePlayClick(e, cgItem.id, cgItem.status)}
                   className="border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer group"
                 >
-                  <td className="p-4 font-semibold text-white">{cgItem.name}</td>
+                  <td className="p-4 font-semibold text-white">
+                    {cgItem.name}
+                    <span className="block text-xs font-normal text-gray-500 mt-1">{cgItem.status}</span>
+                  </td>
                   <td className="p-4 text-gray-300">
                     <div className="flex items-center gap-2">
                       <CircleDollarSign size={14} className="text-gray-500" />
@@ -120,7 +119,7 @@ export function CashGameTable() {
                   </td>
                   <td className="p-4">
                     <CashGameActionsMenu
-                      cashGame={{ id: cgItem.id, name: cgItem.name }}
+                      cashGame={{ id: cgItem.id, name: cgItem.name, status: cgItem.status }}
                       onPlay={handlePlayClick}
                       onDeleted={handleCashGameDeleted}
                     />

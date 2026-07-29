@@ -8,12 +8,21 @@ export const tournamentApi = {
     return data;
   },
 
-  persistLog: async (tournamentId: string, playerId: string | null, type: TournamentLogType, amount: number, message: string) => {
+  play: async (tournamentId: string) => {
+    await api.post(`/v1/tournaments/${tournamentId}/play`);
+  },
+
+  finish: async (tournamentId: string) => {
+    await api.post(`/v1/tournaments/${tournamentId}/finish`);
+  },
+
+  persistLog: async (tournamentId: string, playerId: string | null, type: TournamentLogType, amount: number, message: string, playersLeft: number) => {
     const { data } = await api.post(`/v1/tournaments/${tournamentId}/logs`, {
       tournamentPlayerId: playerId,
       type,
       amount,
-      message
+      message,
+      playersLeft
     });
     return data;
   }

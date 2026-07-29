@@ -12,6 +12,7 @@ interface TournamentDetails {
   expectedPlayers: number;
   allowRebuys: boolean;
   allowAddOn: boolean;
+  status: string;
   levels: TournamentLevel[];
   players?: Array<{ id: string; name: string }>;
   logs?: TournamentLog[];
@@ -177,16 +178,17 @@ export function useTournamentSession(tournamentId: string | null) {
     amount: number,
     message: string,
     successCallback: () => void,
-    errorKey: string
+    errorKey: string,
+    playersLeft: number = activePlayers.length
   ) => {
     if (!tournamentId) return;
     try {
-      const savedLog = await tournamentApi.persistLog(tournamentId, playerId, type, amount, message);
+      const savedLog = await tournamentApi.persistLog(tournamentId, playerId, type, amount, message, playersLeft);
       setLogs(prev => [...prev, savedLog]);
       successCallback();
     } catch (error) {
       console.error(`Error in tournament action ${type}:`, error);
-      alert(t(errorKey));
+      alert(errorKey);
     }
   };
 
@@ -208,7 +210,7 @@ export function useTournamentSession(tournamentId: string | null) {
           p.id === playerId ? { ...p, rebuys: p.rebuys + 1, chips: p.chips + amount } : p
         ));
       },
-      'timer.errors.rebuy'
+      t('timer.errors.rebuy')
     );
   };
 
@@ -230,7 +232,7 @@ export function useTournamentSession(tournamentId: string | null) {
           p.id === playerId ? { ...p, addons: p.addons + 1, chips: p.chips + amount } : p
         ));
       },
-      'timer.errors.addon'
+      t('timer.errors.addon')
     );
   };
 
@@ -239,19 +241,23 @@ export function useTournamentSession(tournamentId: string | null) {
     const player = activePlayers.find(p => p.id === playerId);
     if (!player) return;
 
-    const message = t('timer.logs.elimination', { name: player.name });
+    const playerFinalPosition = activePlayers.length;
+    const eliminationMessage = t('timer.logs.elimination', { name: 'FIXME', eliminatedPlayerName: player.name });
+    const leftMessage = t('timer.logs.left', { name: player.name, position: playerFinalPosition });
 
-    await handleAction(
-      playerId,
-      TournamentLogType.ELIMINATION,
-      0,
-      message,
-      () => {
-        setActivePlayers(prev => prev.filter(p => p.id !== playerId));
-      },
-      'timer.errors.eliminate'
-    );
+    //TODO: Change TournamentLogType.ELIMINATION to use playerId that eliminated the other player (playerId)
+    await handleAction(playerId, TournamentLogType.ELIMINATION, 0, eliminationMessage, () => {setActivePlayers(prev => prev.filter(p => p.id !== playerId))}, t('timer.errors.eliminate'), playerFinalPosition);
+    await handleAction(playerId, TournamentLogType.LEFT, 0, leftMessage, () => {}, t('timer.errors.eliminate'));
+
   };
+
+  const handleChampion = async (playerId: string) => {
+    if (!tournament) return;
+    const player = activePlayers.find(p => p.id === playerId);
+    if (!player) return;
+
+    await handleAction(playerId, TournamentLogType.LEFT, 0, t('timer.logs.champion', { name: player.name }), () => {}, t('timer.errors.eliminate'));
+  }
 
   return {
     tournament,
@@ -267,6 +273,7 @@ export function useTournamentSession(tournamentId: string | null) {
     handleRebuy,
     handleAddOn,
     handleEliminatePlayer,
+    handleChampion,
     setOnRoundEnd,
     refreshSession: loadSessionData
   };

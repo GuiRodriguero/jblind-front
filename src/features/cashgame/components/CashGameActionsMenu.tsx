@@ -1,17 +1,19 @@
-import { MoreVertical, Pencil, Play, Trash2 } from 'lucide-react';
+import { FileText, MoreVertical, Pencil, Play, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { api } from '../../../lib/axios';
 import { DeleteCashGameModal } from './DeleteCashGameModal';
 
 interface CashGameSummary {
-  readonly id: number;
+  readonly id: string;
   readonly name: string;
+  readonly status: string;
 }
 
 interface CashGameActionsMenuProps {
   readonly cashGame: CashGameSummary;
-  readonly onPlay: (e: React.MouseEvent, id: number) => void;
-  readonly onDeleted: (cashGameId: number) => void;
+  readonly onPlay: (e: React.MouseEvent, id: string, status: string) => void;
+  readonly onDeleted: (cashGameId: string) => void;
 }
 
 export function CashGameActionsMenu({
@@ -70,17 +72,11 @@ export function CashGameActionsMenu({
     setIsDeletingCashGame(true);
 
     try {
-      const response = await fetch(`http://localhost:8080/v1/cashgames/${cashGame.id}`, {
-        method: 'DELETE',
-      });
+      await api.delete(`/v1/cashgames/${cashGame.id}`);
 
-      if (response.ok) {
-        setIsDeleteModalOpen(false);
-        onDeleted(cashGame.id);
-        window.location.assign('/cashgames');
-      } else {
-        console.error('Error trying to delete the cash game.');
-      }
+      setIsDeleteModalOpen(false);
+      onDeleted(cashGame.id);
+      window.location.assign('/cashgames');
     } catch (error) {
       console.error('Error trying to communicate with server.', error);
     } finally {
@@ -91,13 +87,23 @@ export function CashGameActionsMenu({
   return (
     <>
       <div className="flex items-center justify-center gap-3">
-        <button
-          onClick={(e) => onPlay(e, cashGame.id)}
-          className="p-2 bg-blue-600/20 text-blue-400 hover:bg-blue-600 hover:text-white rounded-full transition-all group-hover:scale-110"
-          title={t('cashgame.table.button.start.title')}
-        >
-          <Play size={16} fill="currentColor" />
-        </button>
+        {cashGame.status === 'FINISHED' ? (
+          <button
+            onClick={(e) => onPlay(e, cashGame.id, cashGame.status)}
+            className="p-2 bg-amber-600/20 text-amber-400 hover:bg-amber-600 hover:text-white rounded-full transition-all group-hover:scale-110"
+            title={t('cashgame.table.button.summary.title')}
+          >
+            <FileText size={16} />
+          </button>
+        ) : (
+          <button
+            onClick={(e) => onPlay(e, cashGame.id, cashGame.status)}
+            className="p-2 bg-blue-600/20 text-blue-400 hover:bg-blue-600 hover:text-white rounded-full transition-all group-hover:scale-110"
+            title={t('cashgame.table.button.start.title')}
+          >
+            <Play size={16} fill="currentColor" />
+          </button>
+        )}
         <button
           onClick={handleDropdownToggle}
           className="p-2 bg-white/10 text-gray-300 hover:bg-white/20 hover:text-white rounded-full transition-all z-20"

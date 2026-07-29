@@ -8,6 +8,14 @@ export const cashGameApi = {
     return data;
   },
 
+  play: async (cashGameId: string) => {
+    await api.post(`/v1/cashgames/${cashGameId}/play`);
+  },
+
+  finish: async (cashGameId: string) => {
+    await api.post(`/v1/cashgames/${cashGameId}/finish`);
+  },
+
   addPlayer: async (cashGameId: string, name: string) => {
     const { data } = await api.post(`/v1/cashgames/${cashGameId}/players`, { name });
     return data;

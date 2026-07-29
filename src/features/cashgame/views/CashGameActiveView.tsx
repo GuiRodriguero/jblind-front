@@ -9,6 +9,7 @@ import { useWakeLock } from '../../../hooks/useWakeLock';
 import { usePreventUnload } from '../../../hooks/usePreventUnload';
 import { useTimer } from '../hooks/useTimer.ts';
 import { useCashGameSession } from '../hooks/useCashGameSession.ts';
+import { cashGameApi } from '../services/cashGameApi';
 
 export function CashGameActiveView() {
   const { t } = useTranslation();
@@ -37,21 +38,28 @@ export function CashGameActiveView() {
     setShowSummary(true);
   };
 
-  const handleFinishGame = () => {
+  const handleFinishGame = async () => {
+    if (cashGameId) {
+      await cashGameApi.finish(cashGameId);
+    }
     setShowSummary(false);
     navigate('/cashgames');
   };
+
+  const isFinished = cashGame?.status === 'FINISHED';
 
   return (
     <div className="min-h-full flex flex-col p-6 gap-6">
 
       <div className="flex justify-between items-center shrink-0">
-        <button
-          onClick={handleEndSession}
-          className="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors"
-        >
-          {t('cashgame.active.endSession')}
-        </button>
+        {!isFinished && (
+          <button
+            onClick={handleEndSession}
+            className="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors"
+          >
+            {t('cashgame.active.endSession')}
+          </button>
+        )}
       </div>
 
       <div className="grid grid-cols-12 gap-6 flex-1 min-h-0">

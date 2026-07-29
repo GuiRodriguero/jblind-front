@@ -21,7 +21,7 @@ export function TournamentLevelStructureManagerStep({ levels, onLevelsChange }: 
 
     const newLevel: TournamentLevel = {
       id: crypto.randomUUID(),
-      round: currentRound,
+      roundNumber: currentRound,
       smallBlind: nextBigBlind / 2,
       bigBlind: nextBigBlind,
       ante: 0,
@@ -36,12 +36,13 @@ export function TournamentLevelStructureManagerStep({ levels, onLevelsChange }: 
   const addBreak = () => {
     const newLevel: TournamentLevel = {
       id: crypto.randomUUID(),
-      round: currentRound,
+      roundNumber: currentRound,
       smallBlind: 0,
       bigBlind: 0,
       ante: 0,
       durationInMinutes: 10,
       isBreak: true,
+      shouldColorUp: false,
     };
     onLevelsChange([...levels, newLevel]);
   };

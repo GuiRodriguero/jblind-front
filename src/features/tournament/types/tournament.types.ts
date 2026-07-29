@@ -20,6 +20,7 @@ export const TournamentLogType = {
   ADD_ON: 'ADD_ON',
   ELIMINATION: 'ELIMINATION',
   LEFT: 'LEFT',
+  CHAMPION: 'CHAMPION',
 } as const;
 
 export type TournamentLogType = (typeof TournamentLogType)[keyof typeof TournamentLogType];
@@ -35,8 +36,8 @@ export interface TournamentLog {
 }
 
 export const PrizeMode = {
-  FIXED: 'fixed',
-  PERCENTAGE: 'percentage',
+  FIXED: 'FIXED',
+  PERCENTAGE: 'PERCENTAGE',
 } as const;
 
 export type PrizeMode = (typeof PrizeMode)[keyof typeof PrizeMode];
