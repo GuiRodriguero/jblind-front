@@ -11,17 +11,25 @@ interface LevelStructureManagerProps {
 
 export function TournamentLevelStructureManagerStep({ levels, onLevelsChange }: LevelStructureManagerProps) {
   const { t } = useTranslation();
-  const [currentRound, setCurrentRound] = useState(1);
+  const [currentRoundNumber, setCurrentRoundNumber] = useState(1);
+
+  const getLastLevel = (levels: TournamentLevel[]) => {
+    if (levels[levels.length - 1]) {
+      return levels[levels.length - 1].isBreak ? levels[levels.length - 2] : levels[levels.length - 1];
+    }
+
+    return null;
+  }
 
   const addLevel = () => {
-    setCurrentRound(currentRound + 1);
+    setCurrentRoundNumber(currentRoundNumber + 1);
 
-    const lastLevel = levels[levels.length - 1];
-    const nextBigBlind = lastLevel ? lastLevel.bigBlind + 100 : 200;
+    const lastLevel = getLastLevel(levels);
+    const nextBigBlind = lastLevel ? lastLevel.bigBlind * 2 : 100;
 
     const newLevel: TournamentLevel = {
       id: crypto.randomUUID(),
-      roundNumber: currentRound,
+      roundNumber: currentRoundNumber,
       smallBlind: nextBigBlind / 2,
       bigBlind: nextBigBlind,
       ante: 0,
@@ -36,7 +44,7 @@ export function TournamentLevelStructureManagerStep({ levels, onLevelsChange }: 
   const addBreak = () => {
     const newLevel: TournamentLevel = {
       id: crypto.randomUUID(),
-      roundNumber: currentRound,
+      roundNumber: currentRoundNumber,
       smallBlind: 0,
       bigBlind: 0,
       ante: 0,
