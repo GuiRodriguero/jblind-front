@@ -17,7 +17,7 @@ export function DeleteCashGameModal({
   const { t } = useTranslation();
 
   return (
-    <Modal onClose={onClose}>
+    <Modal>
       <h3 className="text-lg font-semibold text-white">{t('cashgame.table.deleteModal.title')}</h3>
       <p className="mt-2 text-sm text-gray-300">
         {t('cashgame.table.deleteModal.description', { name: cashGameName })}

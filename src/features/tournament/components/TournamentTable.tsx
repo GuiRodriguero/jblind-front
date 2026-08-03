@@ -2,6 +2,7 @@ import { Calendar, DollarSign, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatDateTime } from '../../../utils/DateUtils';
+import { tournamentApi } from '../services/tournamentApi';
 import { TournamentActionsMenu } from './TournamentActionsMenu';
 
 interface TournamentSummary {
@@ -22,15 +23,10 @@ export function TournamentTable() {
   useEffect(() => {
     async function fetchTournaments() {
       try {
-        const response = await fetch('http://localhost:8080/v1/tournaments');
-        if (response.ok) {
-          const data = await response.json();
-          setTournaments(data);
-        } else {
-          console.error('Error trying to search tournaments.');
-        }
+        const data = await tournamentApi.findAll();
+        setTournaments(data);
       } catch (error) {
-        console.error('Error connecting with server.', error);
+        console.error('Error trying to search tournaments.', error);
       } finally {
         setLoading(false);
       }
@@ -48,15 +44,8 @@ export function TournamentTable() {
     }
 
     try {
-      const response = await fetch(`http://localhost:8080/v1/tournaments/${id}/play`, {
-        method: 'POST'
-      });
-
-      if (response.ok) {
-        window.location.assign(`/timer?tournamentId=${id}`);
-      } else {
-        console.error('Error trying to start the tournament.');
-      }
+      await tournamentApi.play(String(id));
+      window.location.assign(`/timer?tournamentId=${id}`);
     } catch (error) {
       console.error('Error trying to communicate with server.', error);
     }
@@ -104,8 +93,7 @@ export function TournamentTable() {
                 return (
                   <tr
                     key={tItem.id}
-                    onClick={(e) => handlePlayClick(e, tItem.id, tItem.status)}
-                    className="border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer group"
+                    className="border-b border-white/5 hover:bg-white/5 transition-colors group"
                   >
                     <td className="p-4 font-semibold text-white">
                       {tItem.name}
