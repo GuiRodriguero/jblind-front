@@ -1,6 +1,7 @@
 import { FileText, MoreVertical, Pencil, Play, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { tournamentApi } from '../services/tournamentApi';
 import { DeleteTournamentModal } from './DeleteTournamentModal';
 
 interface TournamentSummary {
@@ -71,17 +72,9 @@ export function TournamentActionsMenu({
     setIsDeletingTournament(true);
 
     try {
-      const response = await fetch(`http://localhost:8080/v1/tournaments/${tournament.id}`, {
-        method: 'DELETE',
-      });
-
-      if (response.ok) {
-        setIsDeleteModalOpen(false);
-        onDeleted(tournament.id);
-        window.location.assign('/tournaments');
-      } else {
-        console.error('Error trying to delete the tournament.');
-      }
+      await tournamentApi.delete(String(tournament.id));
+      setIsDeleteModalOpen(false);
+      onDeleted(tournament.id);
     } catch (error) {
       console.error('Error trying to communicate with server.', error);
     } finally {
@@ -95,7 +88,7 @@ export function TournamentActionsMenu({
         {tournament.status === 'FINISHED' ? (
           <button
             onClick={(e) => onPlay(e, tournament.id, tournament.status)}
-            className="p-2 bg-amber-600/20 text-amber-400 hover:bg-amber-600 hover:text-white rounded-full transition-all group-hover:scale-110"
+            className="p-2 bg-amber-600/20 text-amber-400 hover:bg-amber-600 hover:text-white rounded-full transition-all group-hover:scale-110 cursor-pointer"
             title={t('tournament.table.button.summary.title')}
           >
             <FileText size={16} />
@@ -103,7 +96,7 @@ export function TournamentActionsMenu({
         ) : (
           <button
             onClick={(e) => onPlay(e, tournament.id, tournament.status)}
-            className="p-2 bg-blue-600/20 text-blue-400 hover:bg-blue-600 hover:text-white rounded-full transition-all group-hover:scale-110"
+            className="p-2 bg-blue-600/20 text-blue-400 hover:bg-blue-600 hover:text-white rounded-full transition-all group-hover:scale-110 cursor-pointer"
             title={t('tournament.table.button.start.title')}
           >
             <Play size={16} fill="currentColor" />

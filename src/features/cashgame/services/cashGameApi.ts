@@ -3,6 +3,11 @@ import { CashGameLogType } from '../types/cashgame.types';
 
 export const cashGameApi = {
 
+  findAll: async () => {
+    const { data } = await api.get('/v1/cashgames');
+    return data;
+  },
+
   getDetails: async (cashGameId: string) => {
     const { data } = await api.get(`/v1/cashgames/${cashGameId}`);
     return data;

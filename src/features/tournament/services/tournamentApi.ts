@@ -3,6 +3,11 @@ import { TournamentLogType } from '../types/tournament.types';
 
 export const tournamentApi = {
 
+  findAll: async () => {
+    const { data } = await api.get('/v1/tournaments');
+    return data;
+  },
+
   getDetails: async (tournamentId: string) => {
     const { data } = await api.get(`/v1/tournaments/${tournamentId}`);
     return data;
@@ -10,6 +15,10 @@ export const tournamentApi = {
 
   play: async (tournamentId: string) => {
     await api.post(`/v1/tournaments/${tournamentId}/play`);
+  },
+
+  delete: async (tournamentId: string) => {
+    await api.delete(`/v1/tournaments/${tournamentId}`);
   },
 
   finish: async (tournamentId: string) => {

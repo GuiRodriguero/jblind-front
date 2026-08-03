@@ -73,10 +73,8 @@ export function CashGameActionsMenu({
 
     try {
       await api.delete(`/v1/cashgames/${cashGame.id}`);
-
       setIsDeleteModalOpen(false);
       onDeleted(cashGame.id);
-      window.location.assign('/cashgames');
     } catch (error) {
       console.error('Error trying to communicate with server.', error);
     } finally {
@@ -90,7 +88,7 @@ export function CashGameActionsMenu({
         {cashGame.status === 'FINISHED' ? (
           <button
             onClick={(e) => onPlay(e, cashGame.id, cashGame.status)}
-            className="p-2 bg-amber-600/20 text-amber-400 hover:bg-amber-600 hover:text-white rounded-full transition-all group-hover:scale-110"
+            className="p-2 bg-amber-600/20 text-amber-400 hover:bg-amber-600 hover:text-white rounded-full transition-all group-hover:scale-110 cursor-pointer"
             title={t('cashgame.table.button.summary.title')}
           >
             <FileText size={16} />
@@ -98,7 +96,7 @@ export function CashGameActionsMenu({
         ) : (
           <button
             onClick={(e) => onPlay(e, cashGame.id, cashGame.status)}
-            className="p-2 bg-blue-600/20 text-blue-400 hover:bg-blue-600 hover:text-white rounded-full transition-all group-hover:scale-110"
+            className="p-2 bg-blue-600/20 text-blue-400 hover:bg-blue-600 hover:text-white rounded-full transition-all group-hover:scale-110 cursor-pointer"
             title={t('cashgame.table.button.start.title')}
           >
             <Play size={16} fill="currentColor" />

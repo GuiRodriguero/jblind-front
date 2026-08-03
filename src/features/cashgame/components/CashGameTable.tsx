@@ -2,7 +2,6 @@ import { CircleDollarSign, DollarSign, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cashGameApi } from '../services/cashGameApi';
-import { api } from '../../../lib/axios';
 import { CashGameActionsMenu } from './CashGameActionsMenu';
 
 interface CashGameSummary {
@@ -25,7 +24,7 @@ export function CashGameTable() {
   useEffect(() => {
     async function fetchCashGames() {
       try {
-        const { data } = await api.get('/v1/cashgames');
+        const data = await cashGameApi.findAll();
         setCashGames(data);
       } catch (error) {
         console.error('Error trying to search cash games.', error);
@@ -93,7 +92,7 @@ export function CashGameTable() {
                 <tr
                   key={cgItem.id}
                   onClick={(e) => handlePlayClick(e, cgItem.id, cgItem.status)}
-                  className="border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer group"
+                  className="border-b border-white/5 hover:bg-white/5 transition-colors group"
                 >
                   <td className="p-4 font-semibold text-white">
                     {cgItem.name}
